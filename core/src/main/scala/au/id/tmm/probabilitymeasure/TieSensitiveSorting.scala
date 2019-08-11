@@ -4,11 +4,11 @@ import scala.collection.mutable
 
 object TieSensitiveSorting {
 
-  def sort[A](iterable: Iterable[A])(implicit ordering: Ordering[A]): ProbabilityMeasure[List[A]] = {
-    iterable
-      .toVector
+  def sort[A](iterable: Iterable[A])(implicit ordering: Ordering[A]): ProbabilityMeasure[List[A]] =
+    iterable.toVector
       .sorted(ordering)
-      .foldLeft(List.empty[List[A]]) { case (acc, newElem) =>
+      .foldLeft(List.empty[List[A]]) {
+        case (acc, newElem) =>
           if (acc.nonEmpty && ordering.equiv(acc.last.head, newElem)) {
             acc.init :+ (acc.last :+ newElem)
           } else {
@@ -18,14 +18,14 @@ object TieSensitiveSorting {
       .map { elements =>
         ProbabilityMeasure.allElementsEvenly(elements.permutations.toList).getOrElse(throw new AssertionError)
       }
-      .foldLeft[ProbabilityMeasure[List[A]]](ProbabilityMeasure.Always(List.empty[A])) { case (acc, nextPMeasure) =>
-        acc.flatMap { previousElements =>
-          nextPMeasure.map { nextPossiblePermutation =>
-            previousElements ++ nextPossiblePermutation
+      .foldLeft[ProbabilityMeasure[List[A]]](ProbabilityMeasure.Always(List.empty[A])) {
+        case (acc, nextPMeasure) =>
+          acc.flatMap { previousElements =>
+            nextPMeasure.map { nextPossiblePermutation =>
+              previousElements ++ nextPossiblePermutation
+            }
           }
-        }
       }
-  }
 
   def min[A](iterable: Iterable[A])(implicit ordering: Ordering[A]): Option[ProbabilityMeasure[A]] = {
     if (iterable.isEmpty) {

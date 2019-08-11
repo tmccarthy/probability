@@ -8,8 +8,8 @@ class ProbabilityMeasureSpec extends FlatSpec {
 
   private def makeVaried[A](possibilities: (A, Rational)*): Varied[A] = ProbabilityMeasure(possibilities.toMap) match {
     case Right(varied: Varied[A]) => varied
-    case Right(Always(outcome)) => fail(s"Single outcome $outcome")
-    case Left(constructionError) => fail(constructionError.toString)
+    case Right(Always(outcome))   => fail(s"Single outcome $outcome")
+    case Left(constructionError)  => fail(constructionError.toString)
   }
 
   "a probability measure with a single outcome" can "be represented as a map" in {
@@ -35,7 +35,7 @@ class ProbabilityMeasureSpec extends FlatSpec {
   it can "be flatMapped to another probability measure with a varied outcome" in {
     assert(
       Always("hello").flatMap(_ => makeVaried("hello" -> Rational(1, 3), "world" -> Rational(2, 3))) ===
-        makeVaried("hello" -> Rational(1, 3), "world" -> Rational(2, 3))
+        makeVaried("hello" -> Rational(1, 3), "world" -> Rational(2, 3)),
     )
   }
 
@@ -159,7 +159,6 @@ class ProbabilityMeasureSpec extends FlatSpec {
     assert(varied.flatMap(mappingFunction) === expectedAfterMap)
   }
 
-
   it should "return an outcome as any outcome" in {
     val varied = makeVaried("hello" -> Rational(1, 3), "world" -> Rational(2, 3))
 
@@ -194,7 +193,7 @@ class ProbabilityMeasureSpec extends FlatSpec {
     "return all possibilities with equal probabilities" in {
     assert(
       ProbabilityMeasure.evenly("hello", "world", "apple") ===
-        makeVaried("hello" -> Rational(1, 3), "world" -> Rational(1, 3), "apple" -> Rational(1, 3))
+        makeVaried("hello" -> Rational(1, 3), "world" -> Rational(1, 3), "apple" -> Rational(1, 3)),
     )
   }
 
@@ -206,7 +205,7 @@ class ProbabilityMeasureSpec extends FlatSpec {
     "return all possibilities with equal probabilities" in {
     assert(
       ProbabilityMeasure.evenly(::("hello", List("world", "apple"))) ===
-        makeVaried("hello" -> Rational(1, 3), "world" -> Rational(1, 3), "apple" -> Rational(1, 3))
+        makeVaried("hello" -> Rational(1, 3), "world" -> Rational(1, 3), "apple" -> Rational(1, 3)),
     )
   }
 
@@ -218,7 +217,7 @@ class ProbabilityMeasureSpec extends FlatSpec {
     "return all possibilities with equal probabilities" in {
     assert(
       ProbabilityMeasure.allElementsEvenly(List("hello", "world", "apple")) ===
-        Right(makeVaried("hello" -> Rational(1, 3), "world" -> Rational(1, 3), "apple" -> Rational(1, 3)))
+        Right(makeVaried("hello" -> Rational(1, 3), "world" -> Rational(1, 3), "apple" -> Rational(1, 3))),
     )
   }
 
@@ -292,7 +291,8 @@ class ProbabilityMeasureSpec extends FlatSpec {
   }
 
   it should "remove zero probabilities" in {
-    val attemptedProbabilityMeasure = ProbabilityMeasure("hello" -> Rational(1, 3), "world" -> Rational(2, 3), "apple" -> Rational.zero)
+    val attemptedProbabilityMeasure =
+      ProbabilityMeasure("hello" -> Rational(1, 3), "world" -> Rational(2, 3), "apple" -> Rational.zero)
 
     val expectedOutput = Right(makeVaried("hello" -> Rational(1, 3), "world" -> Rational(2, 3)))
 

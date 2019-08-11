@@ -38,13 +38,14 @@ sealed trait ProbabilityMeasure[A] {
 
 object ProbabilityMeasure {
 
-  def evenly[A](firstPossibility: A, otherPossibilities: A*): ProbabilityMeasure[A] = headTailEvenly(firstPossibility, otherPossibilities)
+  def evenly[A](firstPossibility: A, otherPossibilities: A*): ProbabilityMeasure[A] =
+    headTailEvenly(firstPossibility, otherPossibilities)
 
-  def headTailEvenly[A](possibilitiesHead: A, possibilitiesTail: Iterable[A]): ProbabilityMeasure[A] = {
+  def headTailEvenly[A](possibilitiesHead: A, possibilitiesTail: Iterable[A]): ProbabilityMeasure[A] =
     possibilitiesTail.size match {
       case 0 => Always(possibilitiesHead)
       case numOtherPossibilities => {
-        val numPossibilities = numOtherPossibilities + 1
+        val numPossibilities          = numOtherPossibilities + 1
         val probabilityPerPossibility = Rational(1, numPossibilities)
 
         val underlyingMapBuilder = Map.newBuilder[A, Rational]
@@ -58,18 +59,18 @@ object ProbabilityMeasure {
         VariedImpl(underlyingMapBuilder.result())
       }
     }
-  }
 
   def evenly[A](possibilities: NonEmptyList[A]): ProbabilityMeasure[A] =
     evenly[A](possibilities.head, possibilities.tail: _*)
 
-  def allElementsEvenly[A](possibilities: Iterable[A]): Either[ConstructionError.NoPossibilitiesProvided.type, ProbabilityMeasure[A]] = {
+  def allElementsEvenly[A](
+    possibilities: Iterable[A],
+  ): Either[ConstructionError.NoPossibilitiesProvided.type, ProbabilityMeasure[A]] =
     if (possibilities.isEmpty) {
       Left(ConstructionError.NoPossibilitiesProvided)
     } else {
       Right(evenly[A](possibilities.head, possibilities.tail.toSeq: _*))
     }
-  }
 
   def apply[A](asMap: Map[A, Rational]): Either[ConstructionError, ProbabilityMeasure[A]] = apply(asMap.toSeq: _*)
 
@@ -86,7 +87,7 @@ object ProbabilityMeasure {
   private final class ProbabilityMeasureBuilder[A] {
     private val underlying: mutable.Map[A, Rational] = mutable.Map.empty
 
-    private var runningTotalProbability: Rational = Rational.zero
+    private var runningTotalProbability: Rational                             = Rational.zero
     private var badKey: Option[ConstructionError.InvalidProbabilityForKey[A]] = None
 
     private def isInErrorState = badKey.isDefined
@@ -153,7 +154,7 @@ object ProbabilityMeasure {
 
     override def equals(obj: Any): Boolean = obj match {
       case Always(thatOutcome) => this.outcome == thatOutcome
-      case _ => false
+      case _                   => false
     }
   }
 
@@ -178,7 +179,7 @@ object ProbabilityMeasure {
       builder.sizeHint(asMap.size)
 
       for {
-        (possibility, branchProbability) <- asMap
+        (possibility, branchProbability)       <- asMap
         (newPossibility, subBranchProbability) <- f(possibility).asMap
       } {
         builder addOne newPossibility -> branchProbability * subBranchProbability
@@ -197,8 +198,8 @@ object ProbabilityMeasure {
   sealed abstract class ConstructionError
 
   object ConstructionError {
-    case object NoPossibilitiesProvided extends ConstructionError
-    case object ProbabilitiesDontSumToOne extends ConstructionError
+    case object NoPossibilitiesProvided                                         extends ConstructionError
+    case object ProbabilitiesDontSumToOne                                       extends ConstructionError
     final case class InvalidProbabilityForKey[A](key: A, probability: Rational) extends ConstructionError
   }
 }
