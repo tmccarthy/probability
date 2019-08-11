@@ -17,6 +17,7 @@ lazy val root = project
 lazy val core = project
   .in(file("core"))
   .settings(settingsHelper.settingsForSubprojectCalled("core"))
+  .settings(spireDependency)
 
 lazy val circe = project
   .in(file("circe"))

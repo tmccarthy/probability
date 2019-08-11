@@ -38,6 +38,13 @@ object DependencySettings {
     }
   }
 
+  val spireDependency = libraryDependencies += {
+    CrossVersion.partialVersion(Keys.scalaVersion.value) match {
+      case Some((2, 13))     => "org.typelevel" %% "spire" % "0.17.0-M1"
+      case Some((2, 12)) | _ => "org.typelevel" %% "spire" % "0.16.2"
+    }
+  }
+
   val catsTestKitDependency = libraryDependencies += {
     CrossVersion.partialVersion(Keys.scalaVersion.value) match {
       case Some((2, 13))     => "org.typelevel" %% "cats-testkit" % "2.0.0-M4" % Test
