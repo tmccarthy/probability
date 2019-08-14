@@ -84,7 +84,7 @@ object ProbabilityMeasure {
     builder.result()
   }
 
-  private final class ProbabilityMeasureBuilder[A] {
+  private[probabilitymeasure] final class ProbabilityMeasureBuilder[A] {
     private val underlying: mutable.Map[A, Rational] = mutable.Map.empty
 
     private var runningTotalProbability: Rational                             = Rational.zero

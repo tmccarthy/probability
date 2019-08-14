@@ -28,7 +28,12 @@ lazy val circe = project
 lazy val cats = project
   .in(file("cats"))
   .settings(settingsHelper.settingsForSubprojectCalled("cats"))
-  .settings(catsDependency)
+  .settings(
+    catsDependency,
+    catsTestKitDependency,
+    libraryDependencies += "au.id.tmm.intime" %% "intime-scalacheck" % "1.0.2" % "test",
+    libraryDependencies += "au.id.tmm.intime" %% "intime-cats" % "1.0.2" % "test",
+  )
   .dependsOn(core)
 
 addCommandAlias("check", ";+test;scalafmtCheckAll")
