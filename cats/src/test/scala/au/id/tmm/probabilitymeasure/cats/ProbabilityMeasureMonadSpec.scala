@@ -6,11 +6,11 @@ import au.id.tmm.intime.cats._
 import au.id.tmm.intime.scalacheck._
 import au.id.tmm.probabilitymeasure.ProbabilityMeasure
 import au.id.tmm.probabilitymeasure.cats.ScalacheckInstances._
-import cats.laws.discipline.MonadTests
+import cats.laws.discipline.CommutativeMonadTests
 import cats.tests.CatsSuite
 
 class ProbabilityMeasureMonadSpec extends CatsSuite {
 
-  checkAll("probabilityMeasure", MonadTests[ProbabilityMeasure].monad[String, LocalDate, Month])
+  checkAll("probabilityMeasure", CommutativeMonadTests[ProbabilityMeasure].commutativeMonad[String, LocalDate, Month])
 
 }

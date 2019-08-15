@@ -1,10 +1,10 @@
 package au.id.tmm.probabilitymeasure.cats
 
 import au.id.tmm.probabilitymeasure.ProbabilityMeasure
-import cats.{Hash, Monad, Show}
+import cats.{CommutativeMonad, Hash, Show}
 
 trait ProbabilityMeasureInstances {
-  implicit val catsKernelStdMonadForProbabilityMeasure: Monad[ProbabilityMeasure] =
+  implicit val catsKernelStdMonadForProbabilityMeasure: CommutativeMonad[ProbabilityMeasure] =
     ProbabilityMeasureMonad
 
   implicit def catsKernelStdHashForProbabilityMeasure[A : Hash]: Hash[ProbabilityMeasure[A]] =

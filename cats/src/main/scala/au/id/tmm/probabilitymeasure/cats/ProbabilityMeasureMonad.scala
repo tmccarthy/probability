@@ -2,13 +2,13 @@ package au.id.tmm.probabilitymeasure.cats
 
 import au.id.tmm.probabilitymeasure.ProbabilityMeasure
 import au.id.tmm.probabilitymeasure.ProbabilityMeasure.ProbabilityMeasureBuilder
-import cats.Monad
+import cats.CommutativeMonad
 import com.github.ghik.silencer.silent
 import spire.math.Rational
 
 import scala.collection.mutable
 
-object ProbabilityMeasureMonad extends Monad[ProbabilityMeasure] {
+object ProbabilityMeasureMonad extends CommutativeMonad[ProbabilityMeasure] {
 
   override def pure[A](x: A): ProbabilityMeasure[A] = ProbabilityMeasure.Always(x)
 
