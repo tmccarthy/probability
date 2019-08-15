@@ -22,7 +22,7 @@ sealed trait ProbabilityMeasure[A] {
 
   def hasOnlyOneOutcome: Boolean
 
-  // TODO possibilities as a set
+  def outcomes: Set[A]
 
   override def toString: String = {
     val className = classOf[ProbabilityMeasure[Any]].getSimpleName
@@ -152,6 +152,8 @@ object ProbabilityMeasure {
 
     override def hasOnlyOneOutcome: Boolean = true
 
+    override def outcomes: Set[A] = Set(outcome)
+
     override def equals(obj: Any): Boolean = obj match {
       case Always(thatOutcome) => this.outcome == thatOutcome
       case _                   => false
@@ -193,6 +195,8 @@ object ProbabilityMeasure {
     override def onlyOutcome: None.type = None
 
     override def hasOnlyOneOutcome: Boolean = false
+
+    override def outcomes: Set[A] = asMap.keySet
   }
 
   sealed abstract class ConstructionError

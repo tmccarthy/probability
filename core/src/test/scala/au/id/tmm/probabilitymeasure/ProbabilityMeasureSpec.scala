@@ -71,6 +71,10 @@ class ProbabilityMeasureSpec extends FlatSpec {
     assert(Always("hello").toString === "ProbabilityMeasure(hello -> 1)")
   }
 
+  it should "return its possibilities as a set" in {
+    assert(Always("hello").outcomes === Set("hello"))
+  }
+
   "a probability measure with many possibilities" can "be represented as a map" in {
     val varied = makeVaried("hello" -> Rational(1, 2), "world" -> Rational(1, 2))
 
@@ -187,6 +191,12 @@ class ProbabilityMeasureSpec extends FlatSpec {
     val varied = makeVaried("hello" -> Rational(1, 3), "world" -> Rational(2, 3))
 
     assert(varied.toString === "ProbabilityMeasure(world -> 2/3, hello -> 1/3)")
+  }
+
+  it should "return its possibilities as a set" in {
+    val varied = makeVaried("hello" -> Rational(1, 3), "world" -> Rational(2, 3))
+
+    assert(varied.outcomes === Set("hello", "world"))
   }
 
   "constructing a probability measure evenly from some possibilities" should
