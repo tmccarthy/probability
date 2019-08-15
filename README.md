@@ -66,7 +66,7 @@ the exact probability, without any floating-point errors.
 
 These classes were originally part of [`countstv`](https://github.com/tmccarthy/countstv), which 
 performs election counts according to the [single transferable vote](https://en.wikipedia.org/wiki/Single_transferable_vote)
-(STV) algorithm. In an STV election count, ballots are allocated according to voters's preferences. 
+(STV) algorithm. In an STV election count, ballots are allocated according to voters' preferences. 
 As candidates are marked as "elected" or "excluded", ballots are allocated to the next preferences
 as expressed by the voters. If there is ever a tie, a coin toss is used to determine who is elected
 or excluded first.
