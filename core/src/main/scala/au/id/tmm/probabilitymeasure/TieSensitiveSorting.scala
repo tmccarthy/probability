@@ -27,6 +27,9 @@ object TieSensitiveSorting {
           }
       }
 
+  def max[A](iterable: Iterable[A])(implicit ordering: Ordering[A]): Option[ProbabilityMeasure[A]] =
+    min(iterable)(ordering.reverse)
+
   def min[A](iterable: Iterable[A])(implicit ordering: Ordering[A]): Option[ProbabilityMeasure[A]] = {
     if (iterable.isEmpty) {
       return None
