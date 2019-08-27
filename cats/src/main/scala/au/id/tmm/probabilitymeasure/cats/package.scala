@@ -1,3 +1,3 @@
 package au.id.tmm.probabilitymeasure
 
-package object cats extends ProbabilityMeasureInstances
+package object cats extends ProbabilityMeasureInstances with ProbabilityMeasureStaticCatsUtilities

@@ -214,13 +214,13 @@ class ProbabilityMeasureSpec extends FlatSpec {
   "constructing a probability measure evenly from a non-empty list" should
     "return all possibilities with equal probabilities" in {
     assert(
-      ProbabilityMeasure.evenly(::("hello", List("world", "apple"))) ===
+      ProbabilityMeasure.allElementsEvenly(::("hello", List("world", "apple"))) ===
         makeVaried("hello" -> Rational(1, 3), "world" -> Rational(1, 3), "apple" -> Rational(1, 3)),
     )
   }
 
   it should "return an Always when given a list with only a head" in {
-    assert(ProbabilityMeasure.evenly(::("hello", Nil)) === Always("hello"))
+    assert(ProbabilityMeasure.allElementsEvenly(::("hello", Nil)) === Always("hello"))
   }
 
   "constructing a probability measure evenly from a traversable of possibilities" should

@@ -60,7 +60,7 @@ object ProbabilityMeasure {
       }
     }
 
-  def evenly[A](possibilities: NonEmptyList[A]): ProbabilityMeasure[A] =
+  def allElementsEvenly[A](possibilities: NonEmptyList[A]): ProbabilityMeasure[A] =
     evenly[A](possibilities.head, possibilities.tail: _*)
 
   def allElementsEvenly[A](
