@@ -1,39 +1,43 @@
 import DependencySettings._
 
-val settingsHelper = ProjectSettingsHelper("au.id.tmm","probability-measure")()
+val settingsHelper = ProjectSettingsHelper("au.id.tmm","probability")()
 
 settingsHelper.settingsForBuild
 
 lazy val root = project
   .in(file("."))
   .settings(settingsHelper.settingsForRootProject)
-  .settings(console := (console in Compile in core).value)
+  .settings(console := (console in Compile in probabilityMeasureCore).value)
   .aggregate(
-    core,
-    circe,
-    cats,
+    probabilityMeasureCore,
+    probabilityMeasureCirce,
+    probabilityMeasureCats,
   )
 
-lazy val core = project
-  .in(file("core"))
-  .settings(settingsHelper.settingsForSubprojectCalled("core"))
+lazy val probabilityMeasureCore = project
+  .in(file("probability-measure/core"))
+  .settings(settingsHelper.settingsForSubprojectCalled("measure-core"))
   .settings(spireDependency)
 
-lazy val circe = project
-  .in(file("circe"))
-  .settings(settingsHelper.settingsForSubprojectCalled("circe"))
+lazy val probabilityMeasureCirce = project
+  .in(file("probability-measure/circe"))
+  .settings(settingsHelper.settingsForSubprojectCalled("measure-circe"))
   .settings(circeDependency)
-  .dependsOn(core)
+  .dependsOn(probabilityMeasureCore)
 
-lazy val cats = project
-  .in(file("cats"))
-  .settings(settingsHelper.settingsForSubprojectCalled("cats"))
+lazy val probabilityMeasureCats = project
+  .in(file("probability-measure/cats"))
+  .settings(settingsHelper.settingsForSubprojectCalled("measure-cats"))
   .settings(
     catsDependency,
     catsTestKitDependency,
     libraryDependencies += "au.id.tmm.intime" %% "intime-scalacheck" % "1.0.2" % "test",
-    libraryDependencies += "au.id.tmm.intime" %% "intime-cats" % "1.0.2" % "test",
+    libraryDependencies += "au.id.tmm.intime" %% "intime-cats"       % "1.0.2" % "test",
   )
-  .dependsOn(core)
+  .dependsOn(probabilityMeasureCore)
+
+lazy val probabilityDistributionCore = project
+  .in(file("probability-distribution/core"))
+  .settings(settingsHelper.settingsForSubprojectCalled("distribution-core"))
 
 addCommandAlias("check", ";+test;scalafmtCheckAll")
