@@ -212,14 +212,12 @@ object ProbabilityMeasure {
   }
 
   object ConstructionError {
-    case object NoPossibilitiesProvided   extends ConstructionError
+    case object NoPossibilitiesProvided extends ConstructionError
 
     case object ProbabilitiesDontSumToOne extends ConstructionError
 
-    final case class InvalidProbabilityForKey[A](
-      key: A,
-      cause: Probability.Exception.Invalid[RationalProbability],
-    ) extends ConstructionError {
+    final case class InvalidProbabilityForKey[A](key: A, cause: Probability.Exception.Invalid[RationalProbability])
+        extends ConstructionError {
       override def getCause: Throwable = cause
     }
   }

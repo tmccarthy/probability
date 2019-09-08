@@ -30,22 +30,19 @@ trait Probability[P] {
   val zero: P = makeUnsafe(0, 1)
 
   def addSafe(lhs: P, rhs: P): Either[Probability.Exception.ArithmeticCausedInvalid[P], P] =
-    validate(addUnsafe(lhs, rhs))
-      .left
+    validate(addUnsafe(lhs, rhs)).left
       .map { invalid =>
         Probability.Exception.ArithmeticCausedInvalid(lhs, rhs, invalid)
       }
 
   def subtractSafe(lhs: P, rhs: P): Either[Probability.Exception.ArithmeticCausedInvalid[P], P] =
-    validate(subtractUnsafe(lhs, rhs))
-      .left
+    validate(subtractUnsafe(lhs, rhs)).left
       .map { invalid =>
         Probability.Exception.ArithmeticCausedInvalid(lhs, rhs, invalid)
       }
 
   def divideSafe(lhs: P, rhs: P): Either[Probability.Exception.ArithmeticCausedInvalid[P], P] =
-    validate(divideUnsafe(lhs, rhs))
-      .left
+    validate(divideUnsafe(lhs, rhs)).left
       .map { invalid =>
         Probability.Exception.ArithmeticCausedInvalid(lhs, rhs, invalid)
       }
@@ -54,7 +51,7 @@ trait Probability[P] {
     private def throwIfInvalid(p: P): P =
       validate(p) match {
         case Right(valid) => valid
-        case Left(e) => throw e
+        case Left(e)      => throw e
       }
 
     override def plus(x: P, y: P): P = throwIfInvalid(addUnsafe(x, y))

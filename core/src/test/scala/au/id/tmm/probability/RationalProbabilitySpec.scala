@@ -7,7 +7,8 @@ import spire.math.Rational
 class RationalProbabilitySpec extends FlatSpec {
 
   "safely constructing a rational probability" should "fail if it is less than zero" in {
-    assert(RationalProbability(Rational(-1)) === Left(Probability.Exception.Invalid(RationalProbability.makeUnsafe(-1))))
+    assert(
+      RationalProbability(Rational(-1)) === Left(Probability.Exception.Invalid(RationalProbability.makeUnsafe(-1))))
   }
 
   it should "fail if it is more than one" in {
@@ -41,8 +42,7 @@ class RationalProbabilitySpec extends FlatSpec {
       cause = Probability.Exception.Invalid(RationalProbability.makeUnsafe(7, 6)),
     )
 
-    assert(
-      makeUnsafe(Rational(2, 3)) + makeUnsafe(Rational(1, 2)) === Left(expectedException))
+    assert(makeUnsafe(Rational(2, 3)) + makeUnsafe(Rational(1, 2)) === Left(expectedException))
   }
 
   "unsafely adding two probabilities" should "succeed if the sum is less than or equal to one" in {
@@ -88,7 +88,9 @@ class RationalProbabilitySpec extends FlatSpec {
   }
 
   it should "fail if it is invalid" in {
-    assert(RationalProbability.makeUnsafe(2, 1).validate === Left(Probability.Exception.Invalid(RationalProbability.makeUnsafe(2, 1))))
+    assert(
+      RationalProbability.makeUnsafe(2, 1).validate === Left(
+        Probability.Exception.Invalid(RationalProbability.makeUnsafe(2, 1))))
   }
 
   "a numeric instance for a rational probability" should "exist" in {

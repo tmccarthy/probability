@@ -5,14 +5,18 @@ import spire.math.Rational
 
 final case class RationalProbability private (asRational: Rational) extends AnyVal {
 
-  def +(that: RationalProbability): Either[Probability.Exception.ArithmeticCausedInvalid[RationalProbability], RationalProbability] =
+  def +(
+    that: RationalProbability,
+  ): Either[Probability.Exception.ArithmeticCausedInvalid[RationalProbability], RationalProbability] =
     RationalProbability(this.asRational + that.asRational).left.map(cause =>
       Probability.Exception.ArithmeticCausedInvalid(this, that, cause))
 
   def addUnsafe(that: RationalProbability): RationalProbability =
     RationalProbability.makeUnsafe(this.asRational + that.asRational)
 
-  def -(that: RationalProbability): Either[Probability.Exception.ArithmeticCausedInvalid[RationalProbability], RationalProbability] =
+  def -(
+    that: RationalProbability,
+  ): Either[Probability.Exception.ArithmeticCausedInvalid[RationalProbability], RationalProbability] =
     RationalProbability(this.asRational - that.asRational).left.map(cause =>
       Probability.Exception.ArithmeticCausedInvalid(this, that, cause))
 
@@ -53,23 +57,28 @@ object RationalProbability {
     makeUnsafe(rational).validate
 
   implicit val probabilityInstance: Probability[RationalProbability] = new Probability[RationalProbability] {
-    override def validate(p: RationalProbability): Either[Exception.Invalid[RationalProbability], RationalProbability] = p.validate
+    override def validate(p: RationalProbability): Either[Exception.Invalid[RationalProbability], RationalProbability] =
+      p.validate
 
     override def addUnsafe(lhs: RationalProbability, rhs: RationalProbability): RationalProbability = lhs addUnsafe rhs
 
-    override def subtractUnsafe(lhs: RationalProbability, rhs: RationalProbability): RationalProbability = lhs subtractUnsafe rhs
+    override def subtractUnsafe(lhs: RationalProbability, rhs: RationalProbability): RationalProbability =
+      lhs subtractUnsafe rhs
 
-    override def divideUnsafe(lhs: RationalProbability, rhs: RationalProbability): RationalProbability = lhs divideUnsafe rhs
+    override def divideUnsafe(lhs: RationalProbability, rhs: RationalProbability): RationalProbability =
+      lhs divideUnsafe rhs
 
     override def multiply(lhs: RationalProbability, rhs: RationalProbability): RationalProbability = lhs * rhs
 
     override def divideScalar(p: RationalProbability, scalar: Long): RationalProbability = p / scalar
 
-    override def makeUnsafe(numerator: Long, denominator: Long): RationalProbability = RationalProbability.makeUnsafe(numerator, denominator)
+    override def makeUnsafe(numerator: Long, denominator: Long): RationalProbability =
+      RationalProbability.makeUnsafe(numerator, denominator)
 
     override def toDouble(p: RationalProbability): Double = p.asRational.doubleValue
 
-    override def compare(lhs: RationalProbability, rhs: RationalProbability): Int = lhs.asRational compareTo rhs.asRational
+    override def compare(lhs: RationalProbability, rhs: RationalProbability): Int =
+      lhs.asRational compareTo rhs.asRational
 
     override def show(p: RationalProbability): String = p.toString
 

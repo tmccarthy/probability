@@ -269,7 +269,9 @@ class ProbabilityMeasureSpec extends FlatSpec {
       )
 
     val expectedOutput =
-      Left(ConstructionError.InvalidProbabilityForKey("hello", Probability.Exception.Invalid(RationalProbability.makeUnsafe(-1, 1))))
+      Left(
+        ConstructionError
+          .InvalidProbabilityForKey("hello", Probability.Exception.Invalid(RationalProbability.makeUnsafe(-1, 1))))
 
     assert(attemptedProbabilityMeasure === expectedOutput)
   }
@@ -283,7 +285,9 @@ class ProbabilityMeasureSpec extends FlatSpec {
       )
 
     val expectedOutput =
-      Left(ConstructionError.InvalidProbabilityForKey("hello", Probability.Exception.Invalid(RationalProbability.makeUnsafe(2, 1))))
+      Left(
+        ConstructionError
+          .InvalidProbabilityForKey("hello", Probability.Exception.Invalid(RationalProbability.makeUnsafe(2, 1))))
 
     assert(attemptedProbabilityMeasure === expectedOutput)
   }
