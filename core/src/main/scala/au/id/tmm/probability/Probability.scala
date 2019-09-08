@@ -26,8 +26,8 @@ trait Probability[P] {
 
   def parse(string: String): Option[P]
 
-  val one: P  = makeUnsafe(1, 1)
-  val zero: P = makeUnsafe(0, 1)
+  def one: P  = makeUnsafe(1, 1)
+  def zero: P = makeUnsafe(0, 1)
 
   def addSafe(lhs: P, rhs: P): Either[Probability.Exception.ArithmeticCausedInvalid[P], P] =
     validate(addUnsafe(lhs, rhs)).left

@@ -4,10 +4,8 @@ import org.scalatest.FlatSpec
 
 abstract class ProbabilitySpec[P](implicit probabilityInstance: Probability[P]) extends FlatSpec {
 
-  def unitName: String
-
-  private def one: P = probabilityInstance.one
-  private def zero: P = probabilityInstance.zero
+  private def one: P                                            = probabilityInstance.one
+  private def zero: P                                           = probabilityInstance.zero
   private def makeUnsafe(numerator: Long, denominator: Long): P = probabilityInstance.makeUnsafe(numerator, denominator)
 
   "safely adding two probabilities" should "succeed if the sum is less than or equal to one" in {
@@ -67,9 +65,7 @@ abstract class ProbabilitySpec[P](implicit probabilityInstance: Probability[P]) 
   }
 
   it should "fail if it is invalid" in {
-    assert(
-      probabilityInstance.validate(makeUnsafe(2, 1)) === Left(
-        Probability.Exception.Invalid(makeUnsafe(2, 1))))
+    assert(probabilityInstance.validate(makeUnsafe(2, 1)) === Left(Probability.Exception.Invalid(makeUnsafe(2, 1))))
   }
 
   "a numeric instance for a probability" should "exist" in {

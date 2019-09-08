@@ -57,8 +57,23 @@ object RationalProbability {
     makeUnsafe(rational).validate
 
   implicit val probabilityInstance: Probability[RationalProbability] = new Probability[RationalProbability] {
+
     override def validate(p: RationalProbability): Either[Exception.Invalid[RationalProbability], RationalProbability] =
       p.validate
+
+    override val one: RationalProbability = RationalProbability.one
+
+    override val zero: RationalProbability = RationalProbability.zero
+
+    override def addSafe(
+      lhs: RationalProbability,
+      rhs: RationalProbability,
+    ): Either[Exception.ArithmeticCausedInvalid[RationalProbability], RationalProbability] = lhs + rhs
+
+    override def subtractSafe(
+      lhs: RationalProbability,
+      rhs: RationalProbability,
+    ): Either[Exception.ArithmeticCausedInvalid[RationalProbability], RationalProbability] = lhs - rhs
 
     override def addUnsafe(lhs: RationalProbability, rhs: RationalProbability): RationalProbability = lhs addUnsafe rhs
 
