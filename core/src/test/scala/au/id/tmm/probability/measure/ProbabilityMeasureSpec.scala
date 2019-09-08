@@ -1,8 +1,8 @@
 package au.id.tmm.probability.measure
 
-import au.id.tmm.probability.RationalProbability
 import au.id.tmm.probability.measure.ProbabilityMeasure.ConstructionError.NoPossibilitiesProvided
 import au.id.tmm.probability.measure.ProbabilityMeasure.{Always, ConstructionError, Varied}
+import au.id.tmm.probability.{Probability, RationalProbability}
 import org.scalatest.FlatSpec
 import spire.math.Rational
 
@@ -269,7 +269,7 @@ class ProbabilityMeasureSpec extends FlatSpec {
       )
 
     val expectedOutput =
-      Left(ConstructionError.InvalidProbabilityForKey("hello", RationalProbability.Invalid(Rational(-1))))
+      Left(ConstructionError.InvalidProbabilityForKey("hello", Probability.Exception.Invalid(RationalProbability.makeUnsafe(-1, 1))))
 
     assert(attemptedProbabilityMeasure === expectedOutput)
   }
@@ -283,7 +283,7 @@ class ProbabilityMeasureSpec extends FlatSpec {
       )
 
     val expectedOutput =
-      Left(ConstructionError.InvalidProbabilityForKey("hello", RationalProbability.Invalid(Rational(2))))
+      Left(ConstructionError.InvalidProbabilityForKey("hello", Probability.Exception.Invalid(RationalProbability.makeUnsafe(2, 1))))
 
     assert(attemptedProbabilityMeasure === expectedOutput)
   }

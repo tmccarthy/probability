@@ -7,11 +7,11 @@ import spire.math.Rational
 class RationalProbabilitySpec extends FlatSpec {
 
   "safely constructing a rational probability" should "fail if it is less than zero" in {
-    assert(RationalProbability(Rational(-1)) === Left(RationalProbability.Invalid(Rational(-1))))
+    assert(RationalProbability(Rational(-1)) === Left(Probability.Exception.Invalid(RationalProbability.makeUnsafe(-1))))
   }
 
   it should "fail if it is more than one" in {
-    assert(RationalProbability(Rational(2)) === Left(RationalProbability.Invalid(Rational(2))))
+    assert(RationalProbability(Rational(2)) === Left(Probability.Exception.Invalid(RationalProbability.makeUnsafe(2))))
   }
 
   it should "succeed if it is between zero and 1" in {
@@ -35,9 +35,14 @@ class RationalProbabilitySpec extends FlatSpec {
   }
 
   it should "fail if the sum is more than one" in {
+    val expectedException = Probability.Exception.ArithmeticCausedInvalid(
+      lhs = RationalProbability.makeUnsafe(2, 3),
+      rhs = RationalProbability.makeUnsafe(1, 2),
+      cause = Probability.Exception.Invalid(RationalProbability.makeUnsafe(7, 6)),
+    )
+
     assert(
-      makeUnsafe(Rational(2, 3)) + makeUnsafe(Rational(1, 2)) === Left(RationalProbability
-        .AdditionGreaterThanOne(Rational(2, 3), Rational(1, 2), RationalProbability.Invalid(Rational(7, 6)))))
+      makeUnsafe(Rational(2, 3)) + makeUnsafe(Rational(1, 2)) === Left(expectedException))
   }
 
   "unsafely adding two probabilities" should "succeed if the sum is less than or equal to one" in {
@@ -53,9 +58,13 @@ class RationalProbabilitySpec extends FlatSpec {
   }
 
   it should "fail if the sum is more than one" in {
-    assert(
-      makeUnsafe(Rational(1, 2)) - makeUnsafe(Rational(2, 3)) === Left(RationalProbability
-        .SubtractionLessThanZero(Rational(1, 2), Rational(2, 3), RationalProbability.Invalid(Rational(-1, 6)))))
+    val expectedException = Probability.Exception.ArithmeticCausedInvalid(
+      lhs = RationalProbability.makeUnsafe(1, 2),
+      rhs = RationalProbability.makeUnsafe(2, 3),
+      cause = Probability.Exception.Invalid(RationalProbability.makeUnsafe(-1, 6)),
+    )
+
+    assert(makeUnsafe(Rational(1, 2)) - makeUnsafe(Rational(2, 3)) === Left(expectedException))
   }
 
   "unsafely subtracting two probabilities" should "succeed if the sum is less than or equal to one" in {
@@ -79,7 +88,7 @@ class RationalProbabilitySpec extends FlatSpec {
   }
 
   it should "fail if it is invalid" in {
-    assert(RationalProbability.makeUnsafe(2, 1).validate === Left(RationalProbability.Invalid(Rational(2, 1))))
+    assert(RationalProbability.makeUnsafe(2, 1).validate === Left(Probability.Exception.Invalid(RationalProbability.makeUnsafe(2, 1))))
   }
 
   "a numeric instance for a rational probability" should "exist" in {

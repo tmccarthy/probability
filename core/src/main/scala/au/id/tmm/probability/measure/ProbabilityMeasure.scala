@@ -1,6 +1,6 @@
 package au.id.tmm.probability.measure
 
-import au.id.tmm.probability.{NonEmptyList, RationalProbability}
+import au.id.tmm.probability.{NonEmptyList, Probability, RationalProbability}
 
 import scala.collection.mutable
 import scala.runtime.ScalaRunTime
@@ -213,8 +213,13 @@ object ProbabilityMeasure {
 
   object ConstructionError {
     case object NoPossibilitiesProvided   extends ConstructionError
+
     case object ProbabilitiesDontSumToOne extends ConstructionError
-    final case class InvalidProbabilityForKey[A](key: A, cause: RationalProbability.Invalid) extends ConstructionError {
+
+    final case class InvalidProbabilityForKey[A](
+      key: A,
+      cause: Probability.Exception.Invalid[RationalProbability],
+    ) extends ConstructionError {
       override def getCause: Throwable = cause
     }
   }
