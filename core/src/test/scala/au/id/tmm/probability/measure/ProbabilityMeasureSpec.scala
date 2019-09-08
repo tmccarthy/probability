@@ -1,5 +1,6 @@
 package au.id.tmm.probability.measure
 
+import au.id.tmm.probability.RationalProbability
 import au.id.tmm.probability.measure.ProbabilityMeasure.ConstructionError.NoPossibilitiesProvided
 import au.id.tmm.probability.measure.ProbabilityMeasure.{Always, ConstructionError, Varied}
 import org.scalatest.FlatSpec
@@ -7,22 +8,28 @@ import spire.math.Rational
 
 class ProbabilityMeasureSpec extends FlatSpec {
 
-  private def makeVaried[A](possibilities: (A, Rational)*): Varied[A] = ProbabilityMeasure(possibilities.toMap) match {
-    case Right(varied: Varied[A]) => varied
-    case Right(Always(outcome))   => fail(s"Single outcome $outcome")
-    case Left(constructionError)  => fail(constructionError.toString)
+  private def makeVaried[A](possibilities: (A, Rational)*): Varied[A] = {
+    val possibilitiesWithProbabilities = possibilities.map {
+      case (a, rational) => a -> RationalProbability(rational).fold(e => throw new AssertionError(e), identity)
+    }.toMap
+
+    ProbabilityMeasure(possibilitiesWithProbabilities) match {
+      case Right(varied: Varied[A]) => varied
+      case Right(Always(outcome))   => fail(s"Single outcome $outcome")
+      case Left(constructionError)  => fail(constructionError.toString)
+    }
   }
 
   "a probability measure with a single outcome" can "be represented as a map" in {
-    assert(Always("hello").asMap === Map("hello" -> Rational.one))
+    assert(Always("hello").asMap === Map("hello" -> RationalProbability.one))
   }
 
   it should "have a chance of its outcome of 1" in {
-    assert(Always("hello").chanceOf("hello") === Rational.one)
+    assert(Always("hello").chanceOf("hello") === RationalProbability.one)
   }
 
   it should "have a chance of any other outcome of zero" in {
-    assert(Always("hello").chanceOf("world") === Rational.zero)
+    assert(Always("hello").chanceOf("world") === RationalProbability.zero)
   }
 
   it can "be mapped" in {
@@ -79,19 +86,22 @@ class ProbabilityMeasureSpec extends FlatSpec {
   "a probability measure with many possibilities" can "be represented as a map" in {
     val varied = makeVaried("hello" -> Rational(1, 2), "world" -> Rational(1, 2))
 
-    assert(varied.asMap === Map("hello" -> Rational(1, 2), "world" -> Rational(1, 2)))
+    assert(
+      varied.asMap === Map(
+        "hello" -> RationalProbability.makeUnsafe(1, 2),
+        "world" -> RationalProbability.makeUnsafe(1, 2)))
   }
 
   it should "return the chance of any possibility" in {
     val varied = makeVaried("hello" -> Rational(1, 3), "world" -> Rational(2, 3))
 
-    assert(varied.chanceOf("hello") === Rational(1, 3))
+    assert(varied.chanceOf("hello") === RationalProbability.makeUnsafe(1, 3))
   }
 
   it should "return zero as the possibility of an impossible outcome" in {
     val varied = makeVaried("hello" -> Rational(1, 3), "world" -> Rational(2, 3))
 
-    assert(varied.chanceOf("other") === Rational.zero)
+    assert(varied.chanceOf("other") === RationalProbability.zero)
   }
 
   it can "be mapped when there is no outcome merging" in {
@@ -252,25 +262,38 @@ class ProbabilityMeasureSpec extends FlatSpec {
 
   it should "fail if any probability is less than 0" in {
     val attemptedProbabilityMeasure =
-      ProbabilityMeasure("hello" -> Rational(-1), "world" -> Rational(-1), "apple" -> Rational(2))
+      ProbabilityMeasure(
+        "hello" -> RationalProbability.makeUnsafe(-1),
+        "world" -> RationalProbability.makeUnsafe(-1),
+        "apple" -> RationalProbability.makeUnsafe(2),
+      )
 
-    val expectedOutput = Left(ConstructionError.InvalidProbabilityForKey("hello", Rational(-1)))
+    val expectedOutput =
+      Left(ConstructionError.InvalidProbabilityForKey("hello", RationalProbability.Invalid(Rational(-1))))
 
     assert(attemptedProbabilityMeasure === expectedOutput)
   }
 
   it should "fail if any probability is greater than 1" in {
     val attemptedProbabilityMeasure =
-      ProbabilityMeasure("hello" -> Rational(2), "world" -> Rational(2), "apple" -> Rational(0))
+      ProbabilityMeasure(
+        "hello" -> RationalProbability.makeUnsafe(2),
+        "world" -> RationalProbability.makeUnsafe(2),
+        "apple" -> RationalProbability.makeUnsafe(0),
+      )
 
-    val expectedOutput = Left(ConstructionError.InvalidProbabilityForKey("hello", Rational(2)))
+    val expectedOutput =
+      Left(ConstructionError.InvalidProbabilityForKey("hello", RationalProbability.Invalid(Rational(2))))
 
     assert(attemptedProbabilityMeasure === expectedOutput)
   }
 
   it should "fail if the probabilities do not add up to 1" in {
     val attemptedProbabilityMeasure =
-      ProbabilityMeasure("hello" -> Rational(1, 3), "world" -> Rational(1, 3))
+      ProbabilityMeasure(
+        "hello" -> RationalProbability.makeUnsafe(1, 3),
+        "world" -> RationalProbability.makeUnsafe(1, 3),
+      )
 
     val expectedOutput = Left(ConstructionError.ProbabilitiesDontSumToOne)
 
@@ -278,7 +301,7 @@ class ProbabilityMeasureSpec extends FlatSpec {
   }
 
   it should "produce an Always if only one possibility is supplied" in {
-    val attemptedProbabilityMeasure = ProbabilityMeasure("hello" -> Rational(1))
+    val attemptedProbabilityMeasure = ProbabilityMeasure("hello" -> RationalProbability.one)
 
     val expectedOutput = Right(Always("hello"))
 
@@ -286,7 +309,10 @@ class ProbabilityMeasureSpec extends FlatSpec {
   }
 
   it should "produce an Always if only one possibility is supplied twice" in {
-    val attemptedProbabilityMeasure = ProbabilityMeasure("hello" -> Rational(1, 2), "hello" -> Rational(1, 2))
+    val attemptedProbabilityMeasure = ProbabilityMeasure(
+      "hello" -> RationalProbability.makeUnsafe(1, 2),
+      "hello" -> RationalProbability.makeUnsafe(1, 2),
+    )
 
     val expectedOutput = Right(Always("hello"))
 
@@ -294,7 +320,10 @@ class ProbabilityMeasureSpec extends FlatSpec {
   }
 
   it should "produce a Varied if more than one possibility is supplied" in {
-    val attemptedProbabilityMeasure = ProbabilityMeasure("hello" -> Rational(1, 3), "world" -> Rational(2, 3))
+    val attemptedProbabilityMeasure = ProbabilityMeasure(
+      "hello" -> RationalProbability.makeUnsafe(1, 3),
+      "world" -> RationalProbability.makeUnsafe(2, 3),
+    )
 
     val expectedOutput = Right(makeVaried("hello" -> Rational(1, 3), "world" -> Rational(2, 3)))
 
@@ -303,7 +332,11 @@ class ProbabilityMeasureSpec extends FlatSpec {
 
   it should "remove zero probabilities" in {
     val attemptedProbabilityMeasure =
-      ProbabilityMeasure("hello" -> Rational(1, 3), "world" -> Rational(2, 3), "apple" -> Rational.zero)
+      ProbabilityMeasure(
+        "hello" -> RationalProbability.makeUnsafe(1, 3),
+        "world" -> RationalProbability.makeUnsafe(2, 3),
+        "apple" -> RationalProbability.zero,
+      )
 
     val expectedOutput = Right(makeVaried("hello" -> Rational(1, 3), "world" -> Rational(2, 3)))
 

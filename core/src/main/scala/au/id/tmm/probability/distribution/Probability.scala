@@ -3,15 +3,16 @@ package au.id.tmm.probability.distribution
 import au.id.tmm.probability.distribution.Probability.ConstructionError
 
 final case class Probability private (asDouble: Double) extends AnyVal {
-  def + (that: Probability): Either[ConstructionError, Probability] = Probability(this.asDouble + that.asDouble)
+  def +(that: Probability): Either[ConstructionError, Probability] = Probability(this.asDouble + that.asDouble)
 }
 
 object Probability {
 
-  implicit val ordering: Ordering[Probability] = Ordering.by[Probability, Double](_.asDouble)(Ordering.Double.TotalOrdering)
+  implicit val ordering: Ordering[Probability] =
+    Ordering.by[Probability, Double](_.asDouble)(Ordering.Double.TotalOrdering)
 
   def apply(asDouble: Double): Either[ConstructionError, Probability] =
-    if (asDouble >= 0D && asDouble <= 1D) {
+    if (asDouble >= 0d && asDouble <= 1d) {
       Right(new Probability(asDouble))
     } else {
       Left(ConstructionError(asDouble))

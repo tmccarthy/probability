@@ -1,10 +1,10 @@
 package au.id.tmm.probability.measure.cats
 
+import au.id.tmm.probability.RationalProbability
 import au.id.tmm.probability.measure.ProbabilityMeasure
 import au.id.tmm.probability.measure.ProbabilityMeasure.ProbabilityMeasureBuilder
 import cats.CommutativeMonad
 import com.github.ghik.silencer.silent
-import spire.math.Rational
 
 import scala.collection.mutable
 
@@ -22,7 +22,7 @@ object ProbabilityMeasureMonad extends CommutativeMonad[ProbabilityMeasure] {
   override def tailRecM[A, B](a: A)(f: A => ProbabilityMeasure[Either[A, B]]): ProbabilityMeasure[B] = {
     val builder: ProbabilityMeasureBuilder[B] = new ProbabilityMeasureBuilder[B]
 
-    val workingStack = mutable.Stack[(Either[A, B], Rational)](f(a).asMap.toSeq: _*)
+    val workingStack = mutable.Stack[(Either[A, B], RationalProbability)](f(a).asMap.toSeq: _*)
 
     while (workingStack.nonEmpty) {
       workingStack.pop() match {

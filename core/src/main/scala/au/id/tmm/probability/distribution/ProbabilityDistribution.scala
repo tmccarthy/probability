@@ -44,7 +44,7 @@ object ProbabilityDistribution {
     }
 
     val quantileFn: Probability => A = p => {
-      possibilities((p.asDouble * possibilities.length).toInt)
+      possibilities((p.asDouble * possibilities.length).toInt),
     }
 
     new ProbabilityDistribution(quantileFn)
@@ -53,7 +53,9 @@ object ProbabilityDistribution {
   def allElementsEvenly[A](nonEmptyList: NonEmptyList[A]): ProbabilityDistribution[A] =
     headTailEvenly(nonEmptyList.head, nonEmptyList.tail)
 
-  def allElementsEvenly[A](possibilities: Iterable[A]): Either[ConstructionError.NoPossibilitiesProvided.type, ProbabilityDistribution[A]] =
+  def allElementsEvenly[A](
+    possibilities: Iterable[A],
+  ): Either[ConstructionError.NoPossibilitiesProvided.type, ProbabilityDistribution[A]] =
     if (possibilities.isEmpty) {
       Left(ConstructionError.NoPossibilitiesProvided)
     } else {
@@ -62,9 +64,12 @@ object ProbabilityDistribution {
 
   def withThresholds[A](thresholdsPerA: Iterable[(A, Probability)]): ProbabilityDistribution[A] = ???
 
-  def byProbabilitiesIterable[A](probabilitiesPerA: Iterable[(A, Probability)]): Either[ConstructionError, ProbabilityDistribution[A]] = ???
+  def byProbabilitiesIterable[A](
+    probabilitiesPerA: Iterable[(A, Probability)],
+  ): Either[ConstructionError, ProbabilityDistribution[A]] = ???
 
-  def byProbabilities[A](probabilitiesPerA: (A, Probability)*): Either[ConstructionError, ProbabilityDistribution[A]] = ???
+  def byProbabilities[A](probabilitiesPerA: (A, Probability)*): Either[ConstructionError, ProbabilityDistribution[A]] =
+    ???
 
   def byWeightedIterable[A, N : Numeric](
     weightPerPossibility: Iterable[(A, N)],
@@ -77,8 +82,8 @@ object ProbabilityDistribution {
   sealed abstract class ConstructionError
 
   object ConstructionError {
-    case object NoPossibilitiesProvided extends ConstructionError
-    case object ProbabilitiesDontSumToOne                                       extends ConstructionError
+    case object NoPossibilitiesProvided   extends ConstructionError
+    case object ProbabilitiesDontSumToOne extends ConstructionError
   }
 
 }

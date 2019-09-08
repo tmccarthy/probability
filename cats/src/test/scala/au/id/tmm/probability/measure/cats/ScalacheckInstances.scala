@@ -1,8 +1,8 @@
 package au.id.tmm.probability.measure.cats
 
+import au.id.tmm.probability.RationalProbability
 import au.id.tmm.probability.measure.ProbabilityMeasure
 import org.scalacheck.{Arbitrary, Cogen, Gen}
-import spire.math.Rational
 
 object ScalacheckInstances {
 
@@ -12,7 +12,7 @@ object ScalacheckInstances {
       weights       <- Gen.listOfN(possibilities.length, Gen.chooseNum[Long](0, Int.MaxValue)).suchThat(_.sum > 0)
       denominator = weights.sum
       asMap = (possibilities zip weights).map {
-        case (possibility, weight) => possibility -> Rational(weight, denominator)
+        case (possibility, weight) => possibility -> RationalProbability.makeUnsafe(weight, denominator)
       }.toMap
     } yield ProbabilityMeasure(asMap).fold(e => throw new AssertionError(e), identity)
   }
@@ -20,7 +20,7 @@ object ScalacheckInstances {
   implicit def cogenForProbabilityMeasure[A : Cogen]: Cogen[ProbabilityMeasure[A]] =
     Cogen.it(_.asMap.iterator)
 
-  implicit val cogenForRational: Cogen[Rational] =
-    Cogen.tuple2[Long, Long].contramap(r => (r.numerator.longValue, r.denominator.longValue))
+  implicit val cogenForRational: Cogen[RationalProbability] =
+    Cogen.tuple2[Long, Long].contramap(r => (r.asRational.numerator.longValue, r.asRational.denominator.longValue))
 
 }

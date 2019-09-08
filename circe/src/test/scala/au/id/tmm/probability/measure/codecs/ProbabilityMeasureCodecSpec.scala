@@ -1,17 +1,17 @@
 package au.id.tmm.probability.measure.codecs
 
+import au.id.tmm.probability.RationalProbability
 import au.id.tmm.probability.measure.ProbabilityMeasure
 import io.circe.Json
 import io.circe.syntax._
 import org.scalatest.FlatSpec
-import spire.math.Rational
 
 class ProbabilityMeasureCodecSpec extends FlatSpec {
 
   "the probability measure encoder" should "encode a varied probability measure" in {
     val probabilityMeasure = ProbabilityMeasure(
-      "hello" -> Rational(1, 3),
-      "world" -> Rational(2, 3),
+      "hello" -> RationalProbability.makeUnsafe(1, 3),
+      "world" -> RationalProbability.makeUnsafe(2, 3),
     ).getOrElse(throw new AssertionError)
 
     val expectedJson = Json.arr(
@@ -54,8 +54,8 @@ class ProbabilityMeasureCodecSpec extends FlatSpec {
     )
 
     val expectedProbabilityMeasure = ProbabilityMeasure(
-      "hello" -> Rational(1, 3),
-      "world" -> Rational(2, 3),
+      "hello" -> RationalProbability.makeUnsafe(1, 3),
+      "world" -> RationalProbability.makeUnsafe(2, 3),
     ).getOrElse(throw new AssertionError)
 
     assert(json.as[ProbabilityMeasure[String]] === Right(expectedProbabilityMeasure))
@@ -82,9 +82,8 @@ class ProbabilityMeasureCodecSpec extends FlatSpec {
       ),
     )
 
-    assert(
-      json.as[ProbabilityMeasure[String]].left.map(_.getMessage()) ===
-        Left("ProbabilitiesDontSumToOne"))
+    assert(json.as[ProbabilityMeasure[String]].left.map(_.getMessage()) ===
+      Left("au.id.tmm.probability.measure.ProbabilityMeasure$ConstructionError$ProbabilitiesDontSumToOne$: ProbabilitiesDontSumToOne()"))
   }
 
 }

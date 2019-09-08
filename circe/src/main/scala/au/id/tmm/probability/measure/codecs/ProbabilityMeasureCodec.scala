@@ -1,5 +1,6 @@
 package au.id.tmm.probability.measure.codecs
 
+import au.id.tmm.probability.RationalProbability
 import au.id.tmm.probability.measure.ProbabilityMeasure
 import io.circe.syntax.EncoderOps
 import io.circe.{Decoder, DecodingFailure, Encoder, Json}
@@ -25,7 +26,7 @@ trait ProbabilityMeasureCodec {
 
   implicit def decodeProbabilityMeasure[A : Decoder]: Decoder[ProbabilityMeasure[A]] = Decoder { c =>
     for {
-      elements <- c.as[List[(A, Rational)]](Decoder.decodeList(decodeProbabilityMeasureElement))
+      elements <- c.as[List[(A, RationalProbability)]](Decoder.decodeList(decodeProbabilityMeasureElement))
       asMap = elements.toMap
       probabilityMeasure <- ProbabilityMeasure(asMap) match {
         case Right(probabilityMeasure) => Right(probabilityMeasure)
@@ -34,22 +35,22 @@ trait ProbabilityMeasureCodec {
     } yield probabilityMeasure
   }
 
-  private def decodeProbabilityMeasureElement[A : Decoder]: Decoder[(A, Rational)] = Decoder { c =>
+  private def decodeProbabilityMeasureElement[A : Decoder]: Decoder[(A, RationalProbability)] = Decoder { c =>
     for {
-      probability <- c.downField("probability").as[Rational]
+      probability <- c.downField("probability").as[RationalProbability]
       outcome     <- c.downField("outcome").as[A]
     } yield outcome -> probability
   }
 
-  private implicit val encodeRational: Encoder[Rational] = Encoder { r =>
-    if (r.denominator.isOne) {
-      Json.fromString(r.numerator.toString)
+  private implicit val encodeRationalProbability: Encoder[RationalProbability] = Encoder { r =>
+    if (r.asRational.denominator.isOne) {
+      Json.fromString(r.asRational.numerator.toString)
     } else {
-      Json.fromString(s"${r.numerator}/${r.denominator}")
+      Json.fromString(s"${r.asRational.numerator}/${r.asRational.denominator}")
     }
   }
 
-  private implicit val decodeRational: Decoder[Rational] = Decoder { c =>
+  private implicit val decodeRationalProbability: Decoder[RationalProbability] = Decoder { c =>
     c.as[String].flatMap { rawString =>
       val parts = rawString.split('/').toList
 
@@ -63,7 +64,7 @@ trait ProbabilityMeasureCodec {
         case _ => Left(new Exception(s"Invalid rational $rawString"))
       }
 
-      errorOrRational match {
+      errorOrRational.flatMap(RationalProbability.apply) match {
         case Right(rational) => Right(rational)
         case Left(exception) => Left(DecodingFailure(exception.getMessage, c.history))
       }

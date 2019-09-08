@@ -1,15 +1,15 @@
 package au.id.tmm.probability.measure
 
-import au.id.tmm.probability.NonEmptyList
-import spire.math.Rational
+import au.id.tmm.probability.{NonEmptyList, RationalProbability}
 
 import scala.collection.mutable
+import scala.runtime.ScalaRunTime
 
 sealed trait ProbabilityMeasure[A] {
 
-  def asMap: Map[A, Rational]
+  def asMap: Map[A, RationalProbability]
 
-  def chanceOf(outcome: A): Rational
+  def chanceOf(outcome: A): RationalProbability
 
   def map[U](f: A => U): ProbabilityMeasure[U]
 
@@ -47,9 +47,9 @@ object ProbabilityMeasure {
       case 0 => Always(possibilitiesHead)
       case numOtherPossibilities => {
         val numPossibilities          = numOtherPossibilities + 1
-        val probabilityPerPossibility = Rational(1, numPossibilities)
+        val probabilityPerPossibility = RationalProbability.makeUnsafe(1, numPossibilities)
 
-        val underlyingMapBuilder = Map.newBuilder[A, Rational]
+        val underlyingMapBuilder = Map.newBuilder[A, RationalProbability]
 
         underlyingMapBuilder.sizeHint(numPossibilities)
 
@@ -73,9 +73,10 @@ object ProbabilityMeasure {
       Right(evenly[A](possibilities.head, possibilities.tail.toSeq: _*))
     }
 
-  def apply[A](asMap: Map[A, Rational]): Either[ConstructionError, ProbabilityMeasure[A]] = apply(asMap.toSeq: _*)
+  def apply[A](asMap: Map[A, RationalProbability]): Either[ConstructionError, ProbabilityMeasure[A]] =
+    apply(asMap.toSeq: _*)
 
-  def apply[A](branches: (A, Rational)*): Either[ConstructionError, ProbabilityMeasure[A]] = {
+  def apply[A](branches: (A, RationalProbability)*): Either[ConstructionError, ProbabilityMeasure[A]] = {
     val builder = new ProbabilityMeasureBuilder[A]
 
     builder.sizeHint(branches.size)
@@ -86,36 +87,40 @@ object ProbabilityMeasure {
   }
 
   private[measure] final class ProbabilityMeasureBuilder[A] {
-    private val underlying: mutable.Map[A, Rational] = mutable.Map.empty
+    private val underlying: mutable.Map[A, RationalProbability] = mutable.Map.empty
 
-    private var runningTotalProbability: Rational                             = Rational.zero
+    private var runningTotalProbability: RationalProbability                  = RationalProbability.zero
     private var badKey: Option[ConstructionError.InvalidProbabilityForKey[A]] = None
 
     private def isInErrorState = badKey.isDefined
 
     def sizeHint(size: Int): Unit = underlying.sizeHint(size)
 
-    def addOne(elem: (A, Rational)): this.type = {
+    def addOne(elem: (A, RationalProbability)): this.type = {
       if (isInErrorState) {
         return this
       }
 
       val (possibility, probability) = elem
 
-      if (probability == Rational.zero) {
-        return this
-      }
-      if (probability < Rational.zero || probability > Rational.one) {
-        badKey = Some(ConstructionError.InvalidProbabilityForKey(possibility, probability))
+      if (probability == RationalProbability.zero) {
         return this
       }
 
-      val oldProbability = underlying.getOrElse(possibility, Rational.zero)
+      probability.validate match {
+        case Right(valid) => ()
+        case Left(invalid) => {
+          badKey = Some(ConstructionError.InvalidProbabilityForKey(possibility, invalid))
+          return this
+        }
+      }
 
-      val newProbability = oldProbability + probability
+      val oldProbability = underlying.getOrElse(possibility, RationalProbability.zero)
+
+      val newProbability = oldProbability addUnsafe probability
 
       underlying.update(possibility, newProbability)
-      runningTotalProbability = runningTotalProbability - oldProbability + newProbability
+      runningTotalProbability = runningTotalProbability subtractUnsafe oldProbability addUnsafe newProbability
 
       this
     }
@@ -127,7 +132,7 @@ object ProbabilityMeasure {
       if (underlying.isEmpty) {
         return Left(ConstructionError.NoPossibilitiesProvided)
       }
-      if (runningTotalProbability != Rational.one) {
+      if (runningTotalProbability != RationalProbability.one) {
         return Left(ConstructionError.ProbabilitiesDontSumToOne)
       }
 
@@ -139,9 +144,10 @@ object ProbabilityMeasure {
   }
 
   final case class Always[A](outcome: A) extends ProbabilityMeasure[A] {
-    override def asMap: Map[A, Rational] = Map(outcome -> Rational.one)
+    override def asMap: Map[A, RationalProbability] = Map(outcome -> RationalProbability.one)
 
-    override def chanceOf(outcome: A): Rational = if (outcome == this.outcome) Rational.one else Rational.zero
+    override def chanceOf(outcome: A): RationalProbability =
+      if (outcome == this.outcome) RationalProbability.one else RationalProbability.zero
 
     override def map[U](f: A => U): ProbabilityMeasure[U] = Always(f(outcome))
 
@@ -163,8 +169,9 @@ object ProbabilityMeasure {
 
   sealed trait Varied[A] extends ProbabilityMeasure[A]
 
-  private final case class VariedImpl[A] private (asMap: Map[A, Rational]) extends ProbabilityMeasure.Varied[A] {
-    override def chanceOf(outcome: A): Rational = asMap.getOrElse(outcome, Rational.zero)
+  private final case class VariedImpl[A] private (asMap: Map[A, RationalProbability])
+      extends ProbabilityMeasure.Varied[A] {
+    override def chanceOf(outcome: A): RationalProbability = asMap.getOrElse(outcome, RationalProbability.zero)
 
     override def map[U](f: A => U): ProbabilityMeasure[U] = {
       val builder = new ProbabilityMeasureBuilder[U]
@@ -200,11 +207,15 @@ object ProbabilityMeasure {
     override def outcomes: Set[A] = asMap.keySet
   }
 
-  sealed abstract class ConstructionError
+  sealed abstract class ConstructionError extends RuntimeException with Product {
+    override def getMessage: String = ScalaRunTime._toString(this)
+  }
 
   object ConstructionError {
-    case object NoPossibilitiesProvided                                         extends ConstructionError
-    case object ProbabilitiesDontSumToOne                                       extends ConstructionError
-    final case class InvalidProbabilityForKey[A](key: A, probability: Rational) extends ConstructionError
+    case object NoPossibilitiesProvided   extends ConstructionError
+    case object ProbabilitiesDontSumToOne extends ConstructionError
+    final case class InvalidProbabilityForKey[A](key: A, cause: RationalProbability.Invalid) extends ConstructionError {
+      override def getCause: Throwable = cause
+    }
   }
 }
