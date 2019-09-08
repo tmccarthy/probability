@@ -7,37 +7,33 @@ settingsHelper.settingsForBuild
 lazy val root = project
   .in(file("."))
   .settings(settingsHelper.settingsForRootProject)
-  .settings(console := (console in Compile in probabilityMeasureCore).value)
+  .settings(console := (console in Compile in core).value)
   .aggregate(
-    probabilityMeasureCore,
-    probabilityMeasureCirce,
-    probabilityMeasureCats,
+    core,
+    circe,
+    cats,
   )
 
-lazy val probabilityMeasureCore = project
-  .in(file("probability-measure/core"))
-  .settings(settingsHelper.settingsForSubprojectCalled("measure-core"))
+lazy val core = project
+  .in(file("core"))
+  .settings(settingsHelper.settingsForSubprojectCalled("core"))
   .settings(spireDependency)
 
-lazy val probabilityMeasureCirce = project
-  .in(file("probability-measure/circe"))
-  .settings(settingsHelper.settingsForSubprojectCalled("measure-circe"))
+lazy val circe = project
+  .in(file("circe"))
+  .settings(settingsHelper.settingsForSubprojectCalled("circe"))
   .settings(circeDependency)
-  .dependsOn(probabilityMeasureCore)
+  .dependsOn(core)
 
-lazy val probabilityMeasureCats = project
-  .in(file("probability-measure/cats"))
-  .settings(settingsHelper.settingsForSubprojectCalled("measure-cats"))
+lazy val cats = project
+  .in(file("cats"))
+  .settings(settingsHelper.settingsForSubprojectCalled("cats"))
   .settings(
     catsDependency,
     catsTestKitDependency,
     libraryDependencies += "au.id.tmm.intime" %% "intime-scalacheck" % "1.0.2" % "test",
     libraryDependencies += "au.id.tmm.intime" %% "intime-cats"       % "1.0.2" % "test",
   )
-  .dependsOn(probabilityMeasureCore)
-
-lazy val probabilityDistributionCore = project
-  .in(file("probability-distribution/core"))
-  .settings(settingsHelper.settingsForSubprojectCalled("distribution-core"))
+  .dependsOn(core)
 
 addCommandAlias("check", ";+test;scalafmtCheckAll")
