@@ -1,89 +1,92 @@
 package au.id.tmm.probability.distribution
 
-import au.id.tmm.probability.NonEmptyList
+import au.id.tmm.probability.DoubleProbability
 
-import scala.collection.immutable.ArraySeq
-import scala.collection.mutable
+import scala.collection.{Searching, mutable}
+import scala.util.Random
 
-final class ProbabilityDistribution[A] private (private val quantileFn: Probability => A) {
+final class ProbabilityDistribution[A] private (private val quantileFn: QuantileFunction[A]) {
 
-  def repeatRun(nTimes: Long): Map[A, Long] = {
-    val builder = mutable.Map[A, Long]().withDefaultValue(0L)
+  def run(): A = quantileFn(DoubleProbability.makeUnsafe(Random.nextDouble()))
 
-    (0L until nTimes).foreach { _ =>
-      val a = run
+  def runNTimes(n: Int): Map[A, Int] = {
+    val builder = mutable.Map[A, Int]().withDefaultValue(0)
 
-      builder.update(a, builder(a) + 1L)
+    (0 until n).foreach { _ =>
+      val a = run()
+
+      builder.update(a, builder(a) + 1)
     }
 
     builder.toMap
   }
 
-  def run: A = quantileFn(Probability.random)
+  def flatMap[B](f: A => ProbabilityDistribution[B]): ProbabilityDistribution[B] =
+    new ProbabilityDistribution[B](p => f(this.run()).quantileFn(p))
 
-  def flatMap[B](fn: A => ProbabilityDistribution[B]) =
-    new ProbabilityDistribution[B](p => fn(this.run).quantileFn(p))
+  def map[B](f: A => B): ProbabilityDistribution[B] =
+    new ProbabilityDistribution[B](p => f(this.quantileFn(p)))
 
 }
 
 object ProbabilityDistribution {
 
-  def apply[A](quantileFn: Probability => A): ProbabilityDistribution[A] =
-    new ProbabilityDistribution[A](quantileFn)
+  private implicit val doubleOrdering: Ordering[Double] = Ordering.Double.TotalOrdering
+
+  def apply[A](quantileFunction: QuantileFunction[A]): ProbabilityDistribution[A] =
+    new ProbabilityDistribution[A](quantileFunction)
 
   def always[A](a: A): ProbabilityDistribution[A] = ProbabilityDistribution(_ => a)
 
-  def evenly[A](head: A, tail: A*): ProbabilityDistribution[A] = headTailEvenly(head, tail)
+  def headTailEvenly[A](head: A, tail: Seq[A]): ProbabilityDistribution[A] = {
+    val possibilities = Array.ofDim[Any](tail.length + 1).asInstanceOf[Array[A]]
 
-  def headTailEvenly[A](head: A, tail: scala.collection.Seq[A]): ProbabilityDistribution[A] = {
-    val possibilities = {
-      val array = Array.ofDim[Any](tail.length + 1).asInstanceOf[Array[A]]
-      array(0) = head
-      tail.copyToArray(array, 1)
-      ArraySeq.unsafeWrapArray(array)
-    }
+    possibilities(0) = head
 
-    val quantileFn: Probability => A = p => {
-      possibilities((p.asDouble * possibilities.length).toInt),
+    tail.copyToArray(possibilities, 1)
+
+    val quantileFn: DoubleProbability => A = p => {
+      possibilities((p.asDouble * possibilities.length).toInt)
     }
 
     new ProbabilityDistribution(quantileFn)
   }
 
-  def allElementsEvenly[A](nonEmptyList: NonEmptyList[A]): ProbabilityDistribution[A] =
-    headTailEvenly(nonEmptyList.head, nonEmptyList.tail)
+  def evenly[A](head: A, tail: A*): ProbabilityDistribution[A] = headTailEvenly(head, tail)
 
-  def allElementsEvenly[A](
-    possibilities: Iterable[A],
-  ): Either[ConstructionError.NoPossibilitiesProvided.type, ProbabilityDistribution[A]] =
-    if (possibilities.isEmpty) {
-      Left(ConstructionError.NoPossibilitiesProvided)
-    } else {
-      Right(evenly[A](possibilities.head, possibilities.tail.toSeq: _*))
+  def headTailThresholds[A](
+    firstBucketValue: A,
+    valuesWithBucketStarts: Seq[(A, DoubleProbability)],
+  ): ProbabilityDistribution[A] = {
+    val bucketThresholds = Array.ofDim[Double](valuesWithBucketStarts.size + 1)
+    val bucketValues = Array.ofDim[Any](valuesWithBucketStarts.size + 1).asInstanceOf[Array[A]]
+
+    bucketThresholds(0) = 0d
+    bucketValues(0) = firstBucketValue
+
+    var i = 1
+
+    valuesWithBucketStarts.foreach {
+      case (a, DoubleProbability(asDouble)) => {
+        bucketThresholds(i) = asDouble
+        bucketValues(i) = a
+
+        i = i + 1
+      }
     }
 
-  def withThresholds[A](thresholdsPerA: Iterable[(A, Probability)]): ProbabilityDistribution[A] = ???
-
-  def byProbabilitiesIterable[A](
-    probabilitiesPerA: Iterable[(A, Probability)],
-  ): Either[ConstructionError, ProbabilityDistribution[A]] = ???
-
-  def byProbabilities[A](probabilitiesPerA: (A, Probability)*): Either[ConstructionError, ProbabilityDistribution[A]] =
-    ???
-
-  def byWeightedIterable[A, N : Numeric](
-    weightPerPossibility: Iterable[(A, N)],
-  ): Either[ConstructionError, ProbabilityDistribution[A]] = ???
-
-  def byWeights[A, N : Numeric](
-    weightPerPossibility: (A, N)*,
-  ): Either[ConstructionError, ProbabilityDistribution[A]] = byWeightedIterable(weightPerPossibility)
-
-  sealed abstract class ConstructionError
-
-  object ConstructionError {
-    case object NoPossibilitiesProvided   extends ConstructionError
-    case object ProbabilitiesDontSumToOne extends ConstructionError
+    ProbabilityDistribution { p =>
+      bucketThresholds.search(p.asDouble) match {
+        case Searching.Found(foundIndex) => bucketValues(foundIndex)
+        case Searching.InsertionPoint(insertionPoint) => bucketValues(insertionPoint - 1)
+      }
+    }
   }
+
+  def withThresholds[A](
+    firstBucketValue: A,
+    valuesWithBucketStart: (A, DoubleProbability)*,
+  ): ProbabilityDistribution[A] =
+    headTailThresholds(firstBucketValue, valuesWithBucketStart)
 
 }
