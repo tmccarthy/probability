@@ -3,8 +3,7 @@ package au.id.tmm.probability
 class DoubleProbabilitySpec extends ProbabilitySpec[DoubleProbability] {
 
   "safely constructing a rational probability" should "fail if it is less than zero" in {
-    assert(
-      DoubleProbability(-1) === Left(Probability.Exception.Invalid(DoubleProbability.makeUnsafe(-1))))
+    assert(DoubleProbability(-1) === Left(Probability.Exception.Invalid(DoubleProbability.makeUnsafe(-1))))
   }
 
   it should "fail if it is more than one" in {

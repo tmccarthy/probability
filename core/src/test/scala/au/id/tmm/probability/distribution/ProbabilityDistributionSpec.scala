@@ -10,11 +10,12 @@ class ProbabilityDistributionSpec extends FlatSpec {
     probabilityDistribution: ProbabilityDistribution[A],
     expectedCounts: Map[A, Double],
   ): Unit = {
-    val actualCounts = probabilityDistribution.runNTimes(100000)
+    val actualCounts = probabilityDistribution.runNTimes(1000000)
 
     val actualCountsSum = actualCounts.values.sum
 
-    val actualWeights = actualCounts.view.mapValues(c => c.toDouble / actualCountsSum.toDouble).toMap.withDefaultValue(0d)
+    val actualWeights =
+      actualCounts.view.mapValues(c => c.toDouble / actualCountsSum.toDouble).toMap.withDefaultValue(0d)
 
     val expectedCountsSum = expectedCounts.values.sum
 
@@ -22,14 +23,15 @@ class ProbabilityDistributionSpec extends FlatSpec {
 
     val keys = actualWeights.keySet ++ expectedWeights.keySet
 
-    implicit val doubleEquality: Equality[Double] = (lhs: Double, b: Any) => b match {
-      case rhs: Double => math.abs(lhs - rhs) < 0.001 || math.abs(lhs - rhs) < math.max(lhs, rhs) * 0.02d
-      case _ => false
-    }
+    implicit val doubleEquality: Equality[Double] = (lhs: Double, b: Any) =>
+      b match {
+        case rhs: Double => math.abs(lhs - rhs) < 0.001 || math.abs(lhs - rhs) < math.max(lhs, rhs) * 0.02d
+        case _           => false
+      }
 
     keys.toVector.foreach { key =>
       val expected = expectedWeights(key)
-      val actual = actualWeights(key)
+      val actual   = actualWeights(key)
 
       assert(expected === actual, key)
     }
@@ -62,6 +64,24 @@ class ProbabilityDistributionSpec extends FlatSpec {
       "B" -> DoubleProbability.makeUnsafe(0.4d),
       "C" -> DoubleProbability.makeUnsafe(0.7d),
       "D" -> DoubleProbability.makeUnsafe(0.9d),
+    )
+
+    val expectedWeights = Map[String, Double](
+      "A" -> 4,
+      "B" -> 3,
+      "C" -> 2,
+      "D" -> 1,
+    )
+
+    assertLooksLike(distribution, expectedWeights)
+  }
+
+  "a distribution with weights" should "produce probabilities with those weights" in {
+    val distribution = ProbabilityDistribution.withWeights(
+      "A" -> 4,
+      "B" -> 3,
+      "C" -> 2,
+      "D" -> 1,
     )
 
     val expectedWeights = Map[String, Double](

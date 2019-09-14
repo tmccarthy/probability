@@ -50,7 +50,11 @@ object DoubleProbability {
   @inline def makeUnsafe(double: Double): DoubleProbability = new DoubleProbability(double)
 
   // TODO document that this will throw if denominator is zero
-  def makeUnsafe(numerator: Long, denominator: Long): DoubleProbability = makeUnsafe(numerator.toDouble / denominator.toDouble)
+  def makeUnsafe(numerator: Long, denominator: Long): DoubleProbability =
+    makeUnsafe(numerator.toDouble, denominator.toDouble)
+
+  // TODO document that this will throw if denominator is zero
+  def makeUnsafe(numerator: Double, denominator: Double): DoubleProbability = makeUnsafe(numerator / denominator)
 
   def apply(double: Double): Either[Probability.Exception.Invalid[DoubleProbability], DoubleProbability] =
     makeUnsafe(double).validate

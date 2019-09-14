@@ -2,7 +2,9 @@ package au.id.tmm.probability.distribution
 
 import au.id.tmm.probability.DoubleProbability
 
-import scala.collection.{Searching, mutable}
+import scala.collection.mutable.ArrayBuffer
+import scala.collection.{Searching, Seq, mutable}
+import scala.runtime.ScalaRunTime
 import scala.util.Random
 
 final class ProbabilityDistribution[A] private (private val quantileFn: QuantileFunction[A]) {
@@ -58,8 +60,10 @@ object ProbabilityDistribution {
     firstBucketValue: A,
     valuesWithBucketStarts: Seq[(A, DoubleProbability)],
   ): ProbabilityDistribution[A] = {
+    if (valuesWithBucketStarts.isEmpty) return always(firstBucketValue)
+
     val bucketThresholds = Array.ofDim[Double](valuesWithBucketStarts.size + 1)
-    val bucketValues = Array.ofDim[Any](valuesWithBucketStarts.size + 1).asInstanceOf[Array[A]]
+    val bucketValues     = Array.ofDim[Any](valuesWithBucketStarts.size + 1).asInstanceOf[Array[A]]
 
     bucketThresholds(0) = 0d
     bucketValues(0) = firstBucketValue
@@ -77,7 +81,7 @@ object ProbabilityDistribution {
 
     ProbabilityDistribution { p =>
       bucketThresholds.search(p.asDouble) match {
-        case Searching.Found(foundIndex) => bucketValues(foundIndex)
+        case Searching.Found(foundIndex)              => bucketValues(foundIndex)
         case Searching.InsertionPoint(insertionPoint) => bucketValues(insertionPoint - 1)
       }
     }
@@ -88,5 +92,57 @@ object ProbabilityDistribution {
     valuesWithBucketStart: (A, DoubleProbability)*,
   ): ProbabilityDistribution[A] =
     headTailThresholds(firstBucketValue, valuesWithBucketStart)
+
+  def fromWeights[A, N : Numeric](
+    weightsPerElement: Seq[(A, N)],
+  ): Either[ConstructionError.NoPossibilitiesProvided.type, ProbabilityDistribution[A]] = {
+    if (weightsPerElement.isEmpty) return Left(ConstructionError.NoPossibilitiesProvided)
+    if (weightsPerElement.size == 1) return Right(always(weightsPerElement.head._1))
+
+    val totalWeight: Double = weightsPerElement.foldLeft(0d) {
+      case (acc, (a, weight)) => acc + Numeric[N].toDouble(weight)
+    }
+
+    val thresholds: ArrayBuffer[(A, DoubleProbability)] = mutable.ArrayBuffer[(A, DoubleProbability)]()
+
+    thresholds.sizeHint(weightsPerElement.size - 1)
+
+    for (n <- 1 until weightsPerElement.size) {
+      val a = weightsPerElement(n)._1
+
+      val previousThreshold = if (n == 1) DoubleProbability.zero else thresholds.last._2
+
+      val probabilityOfPreviousElement = DoubleProbability.makeUnsafe(
+        numerator = Numeric[N].toDouble(weightsPerElement(n - 1)._2),
+        denominator = totalWeight,
+      )
+
+      val thisThreshold = previousThreshold.addUnsafe(probabilityOfPreviousElement)
+
+      thresholds.append(a -> thisThreshold)
+    }
+
+    Right(headTailThresholds(weightsPerElement.head._1, thresholds))
+  }
+
+  def headTailWeights[A, N : Numeric](firstWeight: (A, N), otherWeights: Seq[(A, N)]): ProbabilityDistribution[A] = {
+    if (otherWeights.isEmpty) return always(firstWeight._1)
+
+    fromWeights(otherWeights.prepended(firstWeight)) match {
+      case Right(distribution) => distribution
+      case Left(e)             => throw new AssertionError(e)
+    }
+  }
+
+  def withWeights[A, N : Numeric](firstWeight: (A, N), otherWeights: (A, N)*): ProbabilityDistribution[A] =
+    headTailWeights(firstWeight, otherWeights)
+
+  sealed abstract class ConstructionError extends RuntimeException with Product {
+    override def getMessage: String = ScalaRunTime._toString(this)
+  }
+
+  object ConstructionError {
+    case object NoPossibilitiesProvided extends ConstructionError
+  }
 
 }
