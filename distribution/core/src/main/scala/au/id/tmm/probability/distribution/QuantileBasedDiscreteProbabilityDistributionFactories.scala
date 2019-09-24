@@ -11,9 +11,7 @@ trait QuantileBasedDiscreteProbabilityDistributionFactories {
   private implicit val doubleOrdering: Ordering[Double] = Ordering.Double.TotalOrdering
 
   def fromQuantileFunction[A](quantileFunction: QuantileFunction[A]): ProbabilityDistribution[A] =
-    ProbabilityDistribution[A](() => {
-      quantileFunction(DoubleProbability.makeUnsafe(Random.nextDouble()))
-    })
+    ProbabilityDistribution[A](() => quantileFunction(DoubleProbability.makeUnsafe(Random.nextDouble())))
 
   def headTailThresholds[A](
     firstBucketValue: A,
