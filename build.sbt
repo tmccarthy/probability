@@ -1,6 +1,8 @@
 import DependencySettings._
 
-val settingsHelper = ProjectSettingsHelper("au.id.tmm","probability")()
+val settingsHelper = ProjectSettingsHelper("au.id.tmm","probability")(
+  otherScalaVersions = List.empty,
+)
 
 settingsHelper.settingsForBuild
 
@@ -12,12 +14,21 @@ lazy val root = project
     core,
     circe,
     cats,
+    apacheMath,
   )
 
 lazy val core = project
   .in(file("core"))
   .settings(settingsHelper.settingsForSubprojectCalled("core"))
   .settings(spireDependency)
+
+lazy val apacheMath = project
+  .in(file("apache-math"))
+  .settings(settingsHelper.settingsForSubprojectCalled("apache-math"))
+  .settings(
+    libraryDependencies += "org.apache.commons" % "commons-math3" % "3.6.1",
+  )
+  .dependsOn(core)
 
 lazy val circe = project
   .in(file("circe"))

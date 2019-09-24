@@ -10,7 +10,11 @@ class ProbabilityDistributionSpec extends FlatSpec {
     probabilityDistribution: ProbabilityDistribution[A],
     expectedCounts: Map[A, Double],
   ): Unit = {
-    val actualCounts = probabilityDistribution.runNTimes(1000000)
+    val actualCounts = probabilityDistribution
+      .runNTimes(1000000)
+      .groupBy(identity)
+      .view
+      .mapValues(_.size)
 
     val actualCountsSum = actualCounts.values.sum
 
