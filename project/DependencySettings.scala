@@ -10,46 +10,18 @@ object DependencySettings {
     libraryDependencies += compilerPlugin("com.github.ghik" %% "silencer-plugin" % "1.4.1"),
   )
 
-  val catsDependency = libraryDependencies += {
-    CrossVersion.partialVersion(Keys.scalaVersion.value) match {
-      case Some((2, 13))     => "org.typelevel" %% "cats-core" % "2.0.0-M4"
-      case Some((2, 12)) | _ => "org.typelevel" %% "cats-core" % "1.6.1"
-    }
-  }
+  val catsDependency = libraryDependencies += "org.typelevel" %% "cats-core" % "2.0.0"
 
-  val catsEffectDependency = libraryDependencies += {
-    CrossVersion.partialVersion(Keys.scalaVersion.value) match {
-      case Some((2, 13))     => "org.typelevel" %% "cats-effect" % "2.0.0-RC1"
-      case Some((2, 12)) | _ => "org.typelevel" %% "cats-effect" % "1.4.0"
-    }
-  }
+  val catsEffectDependency = libraryDependencies += "org.typelevel" %% "cats-effect" % "2.0.0"
 
-  val fs2Dependency = libraryDependencies += {
-    CrossVersion.partialVersion(Keys.scalaVersion.value) match {
-      case Some((2, 13))     => "co.fs2" %% "fs2-core" % "1.1.0-M1"
-      case Some((2, 12)) | _ => "co.fs2" %% "fs2-core" % "1.0.5"
-    }
-  }
+  val circeDependency = libraryDependencies += "io.circe" %% "circe-core" % "0.12.1"
 
-  val circeDependency = libraryDependencies += {
-    CrossVersion.partialVersion(Keys.scalaVersion.value) match {
-      case Some((2, 13))     => "io.circe" %% "circe-core" % "0.12.0-RC1"
-      case Some((2, 12)) | _ => "io.circe" %% "circe-core" % "0.11.1"
-    }
-  }
+  val spireDependency = libraryDependencies += "org.typelevel" %% "spire" % "0.17.0-M1"
 
-  val spireDependency = libraryDependencies += {
-    CrossVersion.partialVersion(Keys.scalaVersion.value) match {
-      case Some((2, 13))     => "org.typelevel" %% "spire" % "0.17.0-M1"
-      case Some((2, 12)) | _ => "org.typelevel" %% "spire" % "0.16.2"
-    }
-  }
-
-  val catsTestKitDependency = libraryDependencies += {
-    CrossVersion.partialVersion(Keys.scalaVersion.value) match {
-      case Some((2, 13))     => "org.typelevel" %% "cats-testkit" % "2.0.0-M4" % Test
-      case Some((2, 12)) | _ => "org.typelevel" %% "cats-testkit" % "1.6.1"    % Test
-    }
-  }
+  val catsTestKitDependency = libraryDependencies ++= List(
+    "org.typelevel" %% "cats-testkit" % "2.0.0" % Test,
+    "org.typelevel" %% "cats-testkit-scalatest" % "1.0.0-M2" % Test,
+    "org.scalatest" %% "scalatest" % "3.1.0-RC2" % Test,
+  )
 
 }

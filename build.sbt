@@ -43,7 +43,7 @@ lazy val measure = project
   .in(file("measure/core"))
   .settings(settingsHelper.settingsForSubprojectCalled("measure"))
   .settings(spireDependency)
-  .dependsOn(core)
+  .dependsOn(core, core % "test->test")
 
 lazy val measureCirce = project
   .in(file("measure/circe"))
