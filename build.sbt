@@ -12,9 +12,11 @@ lazy val root = project
   .settings(console := (console in Compile in core).value)
   .aggregate(
     core,
-    circe,
-    cats,
-    apacheMath,
+    distribution,
+    distributionApacheMath,
+    measure,
+    measureCirce,
+    measureCats,
   )
 
 lazy val core = project
@@ -22,29 +24,42 @@ lazy val core = project
   .settings(settingsHelper.settingsForSubprojectCalled("core"))
   .settings(spireDependency)
 
-lazy val apacheMath = project
-  .in(file("apache-math"))
-  .settings(settingsHelper.settingsForSubprojectCalled("apache-math"))
+lazy val distribution = project
+  .in(file("distribution/core"))
+  .settings(settingsHelper.settingsForSubprojectCalled("distribution"))
+  .dependsOn(core)
+
+// TODO distribution-cats
+
+lazy val distributionApacheMath = project
+  .in(file("distribution/apache-math"))
+  .settings(settingsHelper.settingsForSubprojectCalled("distribution-apache-math"))
   .settings(
     libraryDependencies += "org.apache.commons" % "commons-math3" % "3.6.1",
   )
+  .dependsOn(distribution)
+
+lazy val measure = project
+  .in(file("measure/core"))
+  .settings(settingsHelper.settingsForSubprojectCalled("measure"))
+  .settings(spireDependency)
   .dependsOn(core)
 
-lazy val circe = project
-  .in(file("circe"))
-  .settings(settingsHelper.settingsForSubprojectCalled("circe"))
+lazy val measureCirce = project
+  .in(file("measure/circe"))
+  .settings(settingsHelper.settingsForSubprojectCalled("measure-circe"))
   .settings(circeDependency)
-  .dependsOn(core)
+  .dependsOn(measure)
 
-lazy val cats = project
-  .in(file("cats"))
-  .settings(settingsHelper.settingsForSubprojectCalled("cats"))
+lazy val measureCats = project
+  .in(file("measure/cats"))
+  .settings(settingsHelper.settingsForSubprojectCalled("measure-cats"))
   .settings(
     catsDependency,
     catsTestKitDependency,
     libraryDependencies += "au.id.tmm.intime" %% "intime-scalacheck" % "1.0.2" % "test",
     libraryDependencies += "au.id.tmm.intime" %% "intime-cats"       % "1.0.2" % "test",
   )
-  .dependsOn(core)
+  .dependsOn(measure)
 
 addCommandAlias("check", ";+test;scalafmtCheckAll")
