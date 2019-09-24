@@ -1,8 +1,11 @@
 package au.id.tmm.probability
 
+import au.id.tmm.probability.DoubleProbabilitySpec._
+import org.scalactic.Equality
+
 class DoubleProbabilitySpec extends ProbabilitySpec[DoubleProbability] {
 
-  "safely constructing a rational probability" should "fail if it is less than zero" in {
+  "safely constructing a double probability" should "fail if it is less than zero" in {
     assert(DoubleProbability(-1) === Left(Probability.Exception.Invalid(DoubleProbability.makeUnsafe(-1))))
   }
 
@@ -14,7 +17,7 @@ class DoubleProbabilitySpec extends ProbabilitySpec[DoubleProbability] {
     assert(DoubleProbability(0.5d) === Right(DoubleProbability.makeUnsafe(0.5d)))
   }
 
-  "unsafely constructing a rational probability" should "succeed if it is invalid" in {
+  "unsafely constructing a double probability" should "succeed if it is invalid" in {
     assert(DoubleProbability.makeUnsafe(-1d).asDouble === -1d)
   }
 
@@ -22,8 +25,35 @@ class DoubleProbabilitySpec extends ProbabilitySpec[DoubleProbability] {
     assert(DoubleProbability.makeUnsafe(0.5d).asDouble === 0.5d)
   }
 
-  it should "fail if the denominator is zero" in {
-    assert(intercept[IllegalArgumentException](DoubleProbability.makeUnsafe(1, 0)).getMessage === "0 denominator")
+  it should "succeed if the denominator is zero" in {
+    assert(DoubleProbability.makeUnsafe(1, 0).asDouble === Double.PositiveInfinity)
+  }
+
+  "the toString for a double probability" should "be sensible" in {
+    assert(DoubleProbability.makeUnsafe(1, 2).toString === "0.5")
+  }
+
+  it should """be "1.0" for one""" in {
+    assert(DoubleProbability.one.toString === "1.0")
+  }
+
+  it should """be "0.0" for zero""" in {
+    assert(DoubleProbability.zero.toString === "0.0")
+  }
+
+}
+
+object DoubleProbabilitySpec {
+
+  implicit val doubleProbabilityEquality: Equality[DoubleProbability] = {
+    val probabilitiesAreEqual: (DoubleProbability, DoubleProbability) => Boolean =
+      DoubleProbability.equalsGivenEpsilon(1e-6)
+
+    (left: DoubleProbability, right: Any) =>
+      right match {
+        case right: DoubleProbability => probabilitiesAreEqual(left, right)
+        case _                        => false
+      }
   }
 
 }

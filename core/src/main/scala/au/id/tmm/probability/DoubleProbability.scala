@@ -59,6 +59,9 @@ object DoubleProbability {
   def apply(double: Double): Either[Probability.Exception.Invalid[DoubleProbability], DoubleProbability] =
     makeUnsafe(double).validate
 
+  def equalsGivenEpsilon(ε: Double)(left: DoubleProbability, right: DoubleProbability): Boolean =
+    math.abs(left.asDouble - right.asDouble) <= ε
+
   implicit val probabilityInstance: Probability[DoubleProbability] = new Probability[DoubleProbability] {
 
     override def validate(p: DoubleProbability): Either[Exception.Invalid[DoubleProbability], DoubleProbability] =

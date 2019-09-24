@@ -1,8 +1,36 @@
 package au.id.tmm.probability
 
+import au.id.tmm.probability.Probability.Exception
+import org.scalactic.Equality
 import org.scalatest.FlatSpec
 
-abstract class ProbabilitySpec[P](implicit probabilityInstance: Probability[P]) extends FlatSpec {
+abstract class ProbabilitySpec[P](
+  implicit
+  probabilityInstance: Probability[P],
+  equality: Equality[P],
+) extends FlatSpec {
+
+  implicit val arithmeticCausedInvalidEquality: Equality[Probability.Exception.ArithmeticCausedInvalid[P]] = {
+    (left: Probability.Exception.ArithmeticCausedInvalid[P], right: Any) =>
+      right match {
+        case right: Probability.Exception.ArithmeticCausedInvalid[P] @unchecked =>
+          equality.areEquivalent(left.lhs, right.lhs) &&
+            equality.areEquivalent(left.rhs, right.rhs) &&
+            equality.areEquivalent(left.cause.invalid, right.cause.invalid)
+      }
+  }
+
+  implicit val eitherArithmeticExceptionOrPEquality
+    : Equality[Either[Probability.Exception.ArithmeticCausedInvalid[P], P]] =
+    (x: Either[Probability.Exception.ArithmeticCausedInvalid[P], P], y: Any) =>
+      (x, y) match {
+        case (Right(x), Right(y)) => x === y
+        case (
+            x: Left[Probability.Exception.ArithmeticCausedInvalid[P], P] @unchecked,
+            y: Left[Probability.Exception.ArithmeticCausedInvalid[P], P] @unchecked) =>
+          x.swap.getOrElse(fail()) === y.swap.getOrElse(fail())
+        case _ => false
+      }
 
   private def one: P                                            = probabilityInstance.one
   private def zero: P                                           = probabilityInstance.zero
@@ -13,7 +41,7 @@ abstract class ProbabilitySpec[P](implicit probabilityInstance: Probability[P]) 
   }
 
   it should "fail if the sum is more than one" in {
-    val expectedException = Probability.Exception.ArithmeticCausedInvalid(
+    val expectedException: Exception.ArithmeticCausedInvalid[P] = Probability.Exception.ArithmeticCausedInvalid(
       lhs = makeUnsafe(2, 3),
       rhs = makeUnsafe(1, 2),
       cause = Probability.Exception.Invalid(makeUnsafe(7, 6)),
@@ -98,18 +126,6 @@ abstract class ProbabilitySpec[P](implicit probabilityInstance: Probability[P]) 
     )
 
     assert(probabilities.sorted === sortedProbabilities)
-  }
-
-  "the toString for a probability" should "be sensible" in {
-    assert(makeUnsafe(1, 2).toString === "1/2")
-  }
-
-  it should """be "1" for one""" in {
-    assert(one.toString === "1")
-  }
-
-  it should """be "0" for zero""" in {
-    assert(zero.toString === "0")
   }
 
 }
