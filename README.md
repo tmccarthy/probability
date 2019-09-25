@@ -1,20 +1,21 @@
-# Probability measure
+# Probability
 
-[![CircleCI](https://circleci.com/gh/tmccarthy/probability-measure.svg?style=svg)](https://circleci.com/gh/tmccarthy/probability-measure)
-[![Maven Central](https://img.shields.io/maven-central/v/au.id.tmm.probability-measure/probability-measure-core_2.13.svg)](https://repo.maven.apache.org/maven2/au/id/tmm/probability-measure/probability-measure-core_2.13/)
+[![CircleCI](https://circleci.com/gh/tmccarthy/probability.svg?style=svg)](https://circleci.com/gh/tmccarthy/probability)
+[![Maven Central](https://img.shields.io/maven-central/v/au.id.tmm.probability/probability-core_2.13.svg)](https://repo.maven.apache.org/maven2/au/id/tmm/probability/probability-core_2.13/)
 
-This project contains a representation of a [probability measure](https://en.wikipedia.org/wiki/Probability_measure)
-over some discrete type, along with instances for [Cats](https://github.com/typelevel/cats) and [Circe](https://github.com/circe/circe).
+A set of Scala classes for representing probabilities, probability distributions and probability measures in Scala, 
+along with instances for [Cats](https://github.com/typelevel/cats) and [Circe](https://github.com/circe/circe).
 
 ```scala
-val probabilityMeasureVersion = "0.0.1"
+val probabilityVersion = "0.0.4"
 
-libraryDependencies += "au.id.tmm.probability-measure" %% "probability-measure-core"  % probabilityMeasureVersion
-libraryDependencies += "au.id.tmm.probability-measure" %% "probability-measure-cats"  % probabilityMeasureVersion
-libraryDependencies += "au.id.tmm.probability-measure" %% "probability-measure-circe" % probabilityMeasureVersion
+libraryDependencies += "au.id.tmm.probability" %% "probability-measure-core"  % probabilityVersion
+libraryDependencies += "au.id.tmm.probability" %% "probability-measure-cats"  % probabilityVersion
+libraryDependencies += "au.id.tmm.probability" %% "probability-measure-circe" % probabilityVersion
+libraryDependencies += "au.id.tmm.probability" %% "probability-distribution-core"  % probabilityVersion
 ```
 
-## Explanation
+## `ProbabilityMeasure`
 
 A `ProbabilityMeasure[A]` is a data structure that describes the probability of some set of values 
 of type `A`, with the requirement that the probabilities must sum to 1. `ProbabilityMeasure` 
@@ -62,7 +63,7 @@ Note that we use the [`spire.math.Rational`](https://typelevel.org/spire/api/spi
 class from the [Spire](https://github.com/typelevel/spire) library to ensure that we always compute
 the exact probability, without any floating-point errors. 
 
-## Why is this useful?
+### Why is this useful?
 
 These classes were originally part of [`countstv`](https://github.com/tmccarthy/countstv), which 
 performs election counts according to the [single transferable vote](https://en.wikipedia.org/wiki/Single_transferable_vote)
@@ -77,7 +78,7 @@ time this makes no difference to who is finally elected. `ProbabilityMeasure` ma
 run the election count for both of the coin toss outcomes, keeping track of the differences while
 also easily identifying that the result is the same.
 
-## Cats and Circe instances
+### Cats and Circe instances
 
 `ProbabilityMeasure` is a monad, and the `probability-measure-cats` dependency provides the 
 appropriate Cats typeclasses.
