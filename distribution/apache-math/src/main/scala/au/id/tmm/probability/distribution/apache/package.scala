@@ -32,9 +32,10 @@ package object apache {
       case e: NotStrictlyPositiveException => Left(e)
     }
 
-  def binomial(p: DoubleProbability): Either[MathIllegalNumberException, ProbabilityDistribution[Int]] =
+  // TODO trails
+  def binomial(trials: Int, p: DoubleProbability): Either[MathIllegalNumberException, ProbabilityDistribution[Int]] =
     try {
-      Right(from(new BinomialDistribution(0, p.asDouble)))
+      Right(from(new BinomialDistribution(trials, p.asDouble)))
     } catch {
       case e: MathIllegalNumberException => Left(e)
     }

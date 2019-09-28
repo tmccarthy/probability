@@ -1,6 +1,8 @@
 package au.id.tmm.probability.distribution
 
+import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable.ArraySeq
+import scala.reflect.ClassTag
 import scala.runtime.ScalaRunTime
 
 final class ProbabilityDistribution[+A] private (private val sample: () => A) {
@@ -10,6 +12,10 @@ final class ProbabilityDistribution[+A] private (private val sample: () => A) {
   // TODO should this be specialised?
   def runNTimes(n: Int): ArraySeq[A] =
     ArraySeq.untagged.fill(n)(sample())
+
+  @specialized
+  def runNTimesTagged(n: Int)(implicit classTag: ClassTag[A] @uncheckedVariance): ArraySeq[A] =
+    ArraySeq.fill(n)(sample())
 
   def flatMap[B](f: A => ProbabilityDistribution[B]): ProbabilityDistribution[B] =
     new ProbabilityDistribution[B](() => f(this.sample()).sample())

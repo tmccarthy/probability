@@ -13,23 +13,37 @@ lazy val root = project
   .aggregate(
     core,
     distribution,
+    distributionCats,
     distributionApacheMath,
     measure,
     measureCirce,
     measureCats,
   )
 
+// TODO rename to shared
 lazy val core = project
   .in(file("core"))
   .settings(settingsHelper.settingsForSubprojectCalled("core"))
   .settings(spireDependency)
+
+// TODO core-cats
+// TODO core-circe
 
 lazy val distribution = project
   .in(file("distribution/core"))
   .settings(settingsHelper.settingsForSubprojectCalled("distribution"))
   .dependsOn(core)
 
-// TODO distribution-cats
+lazy val distributionCats = project
+  .in(file("distribution/cats"))
+  .settings(settingsHelper.settingsForSubprojectCalled("distribution-cats"))
+  .settings(
+    catsDependency,
+    catsTestKitDependency,
+    libraryDependencies += "au.id.tmm.intime" %% "intime-scalacheck" % "1.0.2" % "test",
+    libraryDependencies += "au.id.tmm.intime" %% "intime-cats"       % "1.0.2" % "test",
+  )
+  .dependsOn(distribution)
 
 lazy val distributionApacheMath = project
   .in(file("distribution/apache-math"))
