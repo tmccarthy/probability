@@ -1,7 +1,11 @@
 package au.id.tmm.probability.distribution.cats
 
 import au.id.tmm.probability.distribution.ProbabilityDistribution
-import cats.data.{NonEmptyList => CatsNonEmptyList, NonEmptySet => CatsNonEmptySet, NonEmptyVector => CatsNonEmptyVector}
+import cats.data.{
+  NonEmptyList => CatsNonEmptyList,
+  NonEmptySet => CatsNonEmptySet,
+  NonEmptyVector => CatsNonEmptyVector,
+}
 
 trait ProbabilityDistributionStaticCatsUtilities {
 
