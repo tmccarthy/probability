@@ -9,9 +9,9 @@ settingsHelper.settingsForBuild
 lazy val root = project
   .in(file("."))
   .settings(settingsHelper.settingsForRootProject)
-  .settings(console := (console in Compile in core).value)
+  .settings(console := (console in Compile in shared).value)
   .aggregate(
-    core,
+    shared,
     distribution,
     distributionCats,
     distributionApacheMath,
@@ -20,19 +20,32 @@ lazy val root = project
     measureCats,
   )
 
-// TODO rename to shared
-lazy val core = project
-  .in(file("core"))
-  .settings(settingsHelper.settingsForSubprojectCalled("core"))
+lazy val shared = project
+  .in(file("shared/core"))
+  .settings(settingsHelper.settingsForSubprojectCalled("shared"))
   .settings(spireDependency)
 
-// TODO core-cats
-// TODO core-circe
+lazy val sharedCirce = project
+  .in(file("shared/circe"))
+  .settings(settingsHelper.settingsForSubprojectCalled("shared-circe"))
+  .settings(circeDependency)
+  .dependsOn(shared)
+
+lazy val sharedCats = project
+  .in(file("shared/cats"))
+  .settings(settingsHelper.settingsForSubprojectCalled("shared-cats"))
+  .settings(
+    catsDependency,
+    catsTestKitDependency,
+    libraryDependencies += "au.id.tmm.intime" %% "intime-scalacheck" % "1.0.2" % "test",
+    libraryDependencies += "au.id.tmm.intime" %% "intime-cats"       % "1.0.2" % "test",
+  )
+  .dependsOn(shared)
 
 lazy val distribution = project
   .in(file("distribution/core"))
   .settings(settingsHelper.settingsForSubprojectCalled("distribution"))
-  .dependsOn(core)
+  .dependsOn(shared)
 
 lazy val distributionCats = project
   .in(file("distribution/cats"))
@@ -57,7 +70,7 @@ lazy val measure = project
   .in(file("measure/core"))
   .settings(settingsHelper.settingsForSubprojectCalled("measure"))
   .settings(spireDependency)
-  .dependsOn(core, core % "test->test")
+  .dependsOn(shared, shared % "test->test")
 
 lazy val measureCirce = project
   .in(file("measure/circe"))
