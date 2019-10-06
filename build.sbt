@@ -12,6 +12,9 @@ lazy val root = project
   .settings(console := (console in Compile in shared).value)
   .aggregate(
     shared,
+    sharedCirce,
+    sharedScalacheck,
+    sharedCats,
     distribution,
     distributionCats,
     distributionApacheMath,
@@ -31,6 +34,12 @@ lazy val sharedCirce = project
   .settings(circeDependency)
   .dependsOn(shared)
 
+lazy val sharedScalacheck = project
+  .in(file("shared/scalacheck"))
+  .settings(settingsHelper.settingsForSubprojectCalled("shared-scalacheck"))
+  .settings(scalacheckDependency)
+  .dependsOn(shared)
+
 lazy val sharedCats = project
   .in(file("shared/cats"))
   .settings(settingsHelper.settingsForSubprojectCalled("shared-cats"))
@@ -40,7 +49,7 @@ lazy val sharedCats = project
     libraryDependencies += "au.id.tmm.intime" %% "intime-scalacheck" % "1.0.2" % "test",
     libraryDependencies += "au.id.tmm.intime" %% "intime-cats"       % "1.0.2" % "test",
   )
-  .dependsOn(shared)
+  .dependsOn(shared, sharedScalacheck % "test->compile")
 
 lazy val distribution = project
   .in(file("distribution/core"))
