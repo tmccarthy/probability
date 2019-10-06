@@ -22,4 +22,6 @@ object DependencySettings {
     "org.typelevel" %% "cats-testkit" % "2.0.0-M4" % Test,
   )
 
+  val scalacheckDependency = libraryDependencies += "org.scalacheck" %% "scalacheck" % "1.14.2"
+
 }
