@@ -1,11 +1,13 @@
 package au.id.tmm.probability
 
-import org.scalacheck.{Arbitrary, Cogen}
+import org.scalacheck.{Arbitrary, Cogen, Gen}
 
 package object scalacheck {
 
-  implicit val doubleProbabilityArbitrary: Arbitrary[DoubleProbability] = ???
+  implicit val doubleProbabilityArbitrary: Arbitrary[DoubleProbability] =
+    Arbitrary(Gen.chooseNum[Double](0, 1).map(DoubleProbability.makeUnsafe))
 
-  implicit val doubleProbabilityCogen: Cogen[DoubleProbability] = ???
+  implicit val doubleProbabilityCogen: Cogen[DoubleProbability] =
+    Cogen.cogenDouble.contramap(_.asDouble)
 
 }

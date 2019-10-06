@@ -1,11 +1,11 @@
 package au.id.tmm.probability.cats
 
 import au.id.tmm.probability.DoubleProbability
-import cats.kernel.{Hash, Order}
+import cats.kernel.Order
 
 trait DoubleProbabilityInstances {
 
-  implicit val catsKernelStdOrderForDoubleProbability: Hash[DoubleProbability] with Order[DoubleProbability] =
-    DoubleProbabilityOrder
+  implicit val catsKernelStdOrderForDoubleProbability: Order[DoubleProbability] =
+    new DoubleProbabilityOrder(ε = 1e-10)
 
 }
