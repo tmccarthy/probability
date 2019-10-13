@@ -20,7 +20,8 @@ package object scalacheck {
   @silent("deprecated")
   private def doShrink(p: DoubleProbability): Stream[DoubleProbability] = p match {
     case DoubleProbability.zero => Stream.empty
-    case p if Ordering[DoubleProbability].lt(p, DoubleProbability.makeUnsafe(1, 100000)) => Stream(DoubleProbability.zero)
+    case p if Ordering[DoubleProbability].lt(p, DoubleProbability.makeUnsafe(1, 100000)) =>
+      Stream(DoubleProbability.zero)
     case _ => {
       val next = p / 2
 
