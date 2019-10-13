@@ -105,3 +105,4 @@ lazy val measureCats = project
   .dependsOn(measure, sharedCats, measureScalacheck % "test->compile")
 
 addCommandAlias("check", ";+test;scalafmtCheckAll")
+addCommandAlias("cover", ";clean;coverage;test;coverageAggregate")
