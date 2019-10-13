@@ -1,5 +1,8 @@
 package au.id.tmm.probability.distribution
 
+import au.id.tmm.probability.NonEmptyList
+import au.id.tmm.probability.distribution.ProbabilityDistribution.ConstructionError
+
 import scala.util.Random
 
 trait UniformProbabilityDistributionFactories {
@@ -20,6 +23,10 @@ trait UniformProbabilityDistributionFactories {
 
   def evenly[A](head: A, tail: A*): ProbabilityDistribution[A] = headTailEvenly(head, tail)
 
-  // TODO factories for possibly empty collections
+  def allElementsEvenly[A](nonEmptyList: NonEmptyList[A]): ProbabilityDistribution[A] =
+    headTailEvenly(nonEmptyList.head, nonEmptyList.tail)
+
+  def allElementsEvenly[A](iterable: Iterable[A]): Either[ConstructionError.NoPossibilitiesProvided.type, ProbabilityDistribution[A]] =
+    if (iterable.isEmpty) Left(ConstructionError.NoPossibilitiesProvided) else Right(headTailEvenly(iterable.head, iterable.tail))
 
 }
