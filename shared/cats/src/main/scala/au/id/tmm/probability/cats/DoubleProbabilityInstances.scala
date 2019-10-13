@@ -6,6 +6,6 @@ import cats.kernel.Order
 trait DoubleProbabilityInstances {
 
   implicit val catsKernelStdOrderForDoubleProbability: Order[DoubleProbability] =
-    new DoubleProbabilityOrder(ε = 1e-10)
+    DoubleProbabilityOrder
 
 }
