@@ -5,7 +5,7 @@ import java.time.{LocalDate, Month}
 import au.id.tmm.intime.cats._
 import au.id.tmm.intime.scalacheck._
 import au.id.tmm.probability.measure.ProbabilityMeasure
-import au.id.tmm.probability.measure.cats.ScalacheckInstances._
+import au.id.tmm.probability.measure.scalacheck._
 import cats.laws.discipline.CommutativeMonadTests
 import cats.tests.CatsSuite
 

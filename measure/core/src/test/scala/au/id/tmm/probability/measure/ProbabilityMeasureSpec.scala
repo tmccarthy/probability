@@ -1,8 +1,8 @@
 package au.id.tmm.probability.measure
 
+import au.id.tmm.probability.Probability
 import au.id.tmm.probability.measure.ProbabilityMeasure.ConstructionError.NoPossibilitiesProvided
 import au.id.tmm.probability.measure.ProbabilityMeasure.{Always, ConstructionError, Varied}
-import au.id.tmm.probability.{Probability, RationalProbability}
 import org.scalatest.FlatSpec
 import spire.math.Rational
 

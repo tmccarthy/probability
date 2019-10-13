@@ -1,6 +1,7 @@
-package au.id.tmm.probability
+package au.id.tmm.probability.measure
 
-import au.id.tmm.probability.RationalProbability.makeUnsafe
+import au.id.tmm.probability.measure.RationalProbability._
+import au.id.tmm.probability.{Probability, ProbabilitySpec}
 import spire.math.Rational
 
 class RationalProbabilitySpec extends ProbabilitySpec[RationalProbability] {

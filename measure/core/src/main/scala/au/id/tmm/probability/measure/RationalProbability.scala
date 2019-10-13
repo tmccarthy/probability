@@ -1,5 +1,6 @@
-package au.id.tmm.probability
+package au.id.tmm.probability.measure
 
+import au.id.tmm.probability.Probability
 import au.id.tmm.probability.Probability.Exception
 import spire.math.Rational
 

@@ -1,7 +1,7 @@
 package au.id.tmm.probability.measure.cats
 
 import au.id.tmm.probability.measure.ProbabilityMeasure
-import au.id.tmm.probability.measure.cats.ScalacheckInstances._
+import au.id.tmm.probability.measure.scalacheck._
 import cats.kernel.laws.discipline.HashTests
 import cats.tests.CatsSuite
 

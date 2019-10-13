@@ -1,6 +1,6 @@
 package au.id.tmm.probability.measure
 
-import au.id.tmm.probability.{NonEmptyList, Probability, RationalProbability}
+import au.id.tmm.probability.{NonEmptyList, Probability}
 
 import scala.collection.mutable
 import scala.runtime.ScalaRunTime

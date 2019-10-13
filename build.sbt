@@ -87,6 +87,12 @@ lazy val measureCirce = project
   .settings(circeDependency)
   .dependsOn(measure)
 
+lazy val measureScalacheck = project
+  .in(file("measure/scalacheck"))
+  .settings(settingsHelper.settingsForSubprojectCalled("measure-scalacheck"))
+  .settings(scalacheckDependency)
+  .dependsOn(measure)
+
 lazy val measureCats = project
   .in(file("measure/cats"))
   .settings(settingsHelper.settingsForSubprojectCalled("measure-cats"))
@@ -96,6 +102,6 @@ lazy val measureCats = project
     libraryDependencies += "au.id.tmm.intime" %% "intime-scalacheck" % "1.0.2" % "test",
     libraryDependencies += "au.id.tmm.intime" %% "intime-cats"       % "1.0.2" % "test",
   )
-  .dependsOn(measure)
+  .dependsOn(measure, sharedCats, measureScalacheck % "test->compile")
 
 addCommandAlias("check", ";+test;scalafmtCheckAll")
