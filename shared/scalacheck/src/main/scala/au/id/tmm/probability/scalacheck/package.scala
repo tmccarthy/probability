@@ -10,4 +10,8 @@ package object scalacheck {
   implicit val doubleProbabilityCogen: Cogen[DoubleProbability] =
     Cogen.cogenDouble.contramap(_.asDouble)
 
+  // TODO double probability choose
+
+  // TODO double probability shrink
+
 }

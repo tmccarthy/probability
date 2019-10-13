@@ -1,7 +1,6 @@
 package au.id.tmm.probability.measure.codecs
 
-import au.id.tmm.probability.RationalProbability
-import au.id.tmm.probability.measure.ProbabilityMeasure
+import au.id.tmm.probability.measure.{ProbabilityMeasure, RationalProbability}
 import io.circe.syntax.EncoderOps
 import io.circe.{Decoder, DecodingFailure, Encoder, Json}
 import spire.math.Rational
@@ -42,6 +41,7 @@ trait ProbabilityMeasureCodec {
     } yield outcome -> probability
   }
 
+  // TODO make these public
   private implicit val encodeRationalProbability: Encoder[RationalProbability] = Encoder { r =>
     if (r.asRational.denominator.isOne) {
       Json.fromString(r.asRational.numerator.toString)

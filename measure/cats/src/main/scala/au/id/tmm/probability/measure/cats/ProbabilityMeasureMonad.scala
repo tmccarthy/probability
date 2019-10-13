@@ -1,8 +1,7 @@
 package au.id.tmm.probability.measure.cats
 
-import au.id.tmm.probability.RationalProbability
-import au.id.tmm.probability.measure.ProbabilityMeasure
 import au.id.tmm.probability.measure.ProbabilityMeasure.ProbabilityMeasureBuilder
+import au.id.tmm.probability.measure.{ProbabilityMeasure, RationalProbability}
 import cats.CommutativeMonad
 import com.github.ghik.silencer.silent
 

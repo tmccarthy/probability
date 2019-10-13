@@ -1,7 +1,6 @@
 package au.id.tmm.probability.measure.codecs
 
-import au.id.tmm.probability.RationalProbability
-import au.id.tmm.probability.measure.ProbabilityMeasure
+import au.id.tmm.probability.measure.{ProbabilityMeasure, RationalProbability}
 import io.circe.Json
 import io.circe.syntax._
 import org.scalatest.FlatSpec
