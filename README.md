@@ -1,7 +1,7 @@
 # Probability
 
 [![CircleCI](https://circleci.com/gh/tmccarthy/probability.svg?style=svg)](https://circleci.com/gh/tmccarthy/probability)
-[![Maven Central](https://img.shields.io/maven-central/v/au.id.tmm.probability/probability-core_2.13.svg)](https://repo.maven.apache.org/maven2/au/id/tmm/probability/probability-core_2.13/)
+[![Maven Central](https://img.shields.io/maven-central/v/au.id.tmm.probability/probability-shared_2.13.svg)](https://repo.maven.apache.org/maven2/au/id/tmm/probability/probability-shared_2.13/)
 
 A set of Scala classes for representing probabilities, probability distributions and probability measures in Scala, 
 along with instances for [Cats](https://github.com/typelevel/cats) and [Circe](https://github.com/circe/circe).
