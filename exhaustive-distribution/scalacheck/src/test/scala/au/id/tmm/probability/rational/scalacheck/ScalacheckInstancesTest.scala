@@ -1,4 +1,4 @@
-package au.id.tmm.probability.distribution.exhaustive.scalacheck
+package au.id.tmm.probability.rational.scalacheck
 
 import au.id.tmm.probability.rational.RationalProbability
 import org.scalatest.FlatSpec

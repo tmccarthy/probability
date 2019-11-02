@@ -1,8 +1,8 @@
 package au.id.tmm.probability.distribution.exhaustive.cats
 
 import au.id.tmm.probability.cats._
-import au.id.tmm.probability.distribution.exhaustive.scalacheck._
 import au.id.tmm.probability.rational.RationalProbability
+import au.id.tmm.probability.rational.scalacheck._
 import cats.kernel.laws.discipline.{CommutativeMonoidTests, HashTests, OrderTests}
 import cats.tests.CatsSuite
 
