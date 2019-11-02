@@ -58,26 +58,26 @@ lazy val coreApacheMath = project
   .dependsOn(core)
 
 lazy val exhaustiveDistribution = project
-  .in(file("exhaustive-distribution/core"))
-  .settings(settingsHelper.settingsForSubprojectCalled("exhaustive-distribution"))
+  .in(file("distribution-exhaustive/core"))
+  .settings(settingsHelper.settingsForSubprojectCalled("distribution-exhaustive"))
   .settings(spireDependency)
   .dependsOn(core, core % "test->test")
 
 lazy val exhaustiveDistributionCirce = project
-  .in(file("exhaustive-distribution/circe"))
-  .settings(settingsHelper.settingsForSubprojectCalled("exhaustive-distribution-circe"))
+  .in(file("distribution-exhaustive/circe"))
+  .settings(settingsHelper.settingsForSubprojectCalled("distribution-exhaustive-circe"))
   .settings(circeDependency)
   .dependsOn(exhaustiveDistribution)
 
 lazy val exhaustiveDistributionScalacheck = project
-  .in(file("exhaustive-distribution/scalacheck"))
-  .settings(settingsHelper.settingsForSubprojectCalled("exhaustive-distribution-scalacheck"))
+  .in(file("distribution-exhaustive/scalacheck"))
+  .settings(settingsHelper.settingsForSubprojectCalled("distribution-exhaustive-scalacheck"))
   .settings(scalacheckDependency)
   .dependsOn(exhaustiveDistribution)
 
 lazy val exhaustiveDistributionCats = project
-  .in(file("exhaustive-distribution/cats"))
-  .settings(settingsHelper.settingsForSubprojectCalled("exhaustive-distribution-cats"))
+  .in(file("distribution-exhaustive/cats"))
+  .settings(settingsHelper.settingsForSubprojectCalled("distribution-exhaustive-cats"))
   .settings(
     catsDependency,
     catsTestKitDependency,
