@@ -1,8 +1,7 @@
 package au.id.tmm.probability.distribution.exhaustive
 
 import au.id.tmm.probability.Probability
-import ProbabilityDistribution.ConstructionError.NoPossibilitiesProvided
-import ProbabilityDistribution.{Always, ConstructionError, Varied}
+import au.id.tmm.probability.distribution.exhaustive.ProbabilityDistribution.{Always, ConstructionError, Varied}
 import au.id.tmm.probability.rational.RationalProbability
 import org.scalatest.FlatSpec
 import spire.math.Rational
@@ -21,7 +20,7 @@ class ProbabilityDistributionSpec extends FlatSpec {
     }
   }
 
-  "a probability measure with a single outcome" can "be represented as a map" in {
+  "a probability distribution with a single outcome" can "be represented as a map" in {
     assert(Always("hello").asMap === Map("hello" -> RationalProbability.one))
   }
 
@@ -37,22 +36,22 @@ class ProbabilityDistributionSpec extends FlatSpec {
     assert(Always("hello").map(_.length) === Always(5))
   }
 
-  it can "be flatMapped to another probability measure with a single outcome" in {
+  it can "be flatMapped to another probability distribution with a single outcome" in {
     assert(Always("hello").flatMap(s => Always(s.length)) === Always(5))
   }
 
-  it can "be flatMapped to another probability measure with a varied outcome" in {
+  it can "be flatMapped to another probability distribution with a varied outcome" in {
     assert(
       Always("hello").flatMap(_ => makeVaried("hello" -> Rational(1, 3), "world" -> Rational(2, 3))) ===
         makeVaried("hello" -> Rational(1, 3), "world" -> Rational(2, 3)),
     )
   }
 
-  it should "be equal to another probability measure with the same single outcome" in {
+  it should "be equal to another probability distribution with the same single outcome" in {
     assert(Always("hello") === Always("hello"))
   }
 
-  it should "not be equal to another probability measure with a different single outcome" in {
+  it should "not be equal to another probability distribution with a different single outcome" in {
     assert(Always("hello") !== Always("world"))
   }
 
@@ -77,14 +76,14 @@ class ProbabilityDistributionSpec extends FlatSpec {
   }
 
   it should "have a sensible toString" in {
-    assert(Always("hello").toString === "ProbabilityMeasure(hello -> 1)")
+    assert(Always("hello").toString === "ProbabilityDistribution(hello -> 1)")
   }
 
   it should "return its possibilities as a set" in {
     assert(Always("hello").outcomes === Set("hello"))
   }
 
-  "a probability measure with many possibilities" can "be represented as a map" in {
+  "a probability distribution with many possibilities" can "be represented as a map" in {
     val varied = makeVaried("hello" -> Rational(1, 2), "world" -> Rational(1, 2))
 
     assert(
@@ -202,7 +201,7 @@ class ProbabilityDistributionSpec extends FlatSpec {
   it should "have a sensible toString" in {
     val varied = makeVaried("hello" -> Rational(1, 3), "world" -> Rational(2, 3))
 
-    assert(varied.toString === "ProbabilityMeasure(world -> 2/3, hello -> 1/3)")
+    assert(varied.toString === "ProbabilityDistribution(world -> 2/3, hello -> 1/3)")
   }
 
   it should "return its possibilities as a set" in {
@@ -211,7 +210,7 @@ class ProbabilityDistributionSpec extends FlatSpec {
     assert(varied.outcomes === Set("hello", "world"))
   }
 
-  "constructing a probability measure evenly from some possibilities" should
+  "constructing a probability distribution evenly from some possibilities" should
     "return all possibilities with equal probabilities" in {
     assert(
       ProbabilityDistribution.evenly("hello", "world", "apple") ===
@@ -223,7 +222,7 @@ class ProbabilityDistributionSpec extends FlatSpec {
     assert(ProbabilityDistribution.evenly("hello") === Always("hello"))
   }
 
-  "constructing a probability measure evenly from a non-empty list" should
+  "constructing a probability distribution evenly from a non-empty list" should
     "return all possibilities with equal probabilities" in {
     assert(
       ProbabilityDistribution.allElementsEvenly(::("hello", List("world", "apple"))) ===
@@ -235,34 +234,34 @@ class ProbabilityDistributionSpec extends FlatSpec {
     assert(ProbabilityDistribution.allElementsEvenly(::("hello", Nil)) === Always("hello"))
   }
 
-  "constructing a probability measure evenly from a traversable of possibilities" should
+  "constructing a probability distribution evenly from a traversable of possibilities" should
     "return all possibilities with equal probabilities" in {
     assert(
       ProbabilityDistribution.allElementsEvenly(List("hello", "world", "apple")) ===
-        Right(makeVaried("hello" -> Rational(1, 3), "world" -> Rational(1, 3), "apple" -> Rational(1, 3))),
+        Some(makeVaried("hello" -> Rational(1, 3), "world" -> Rational(1, 3), "apple" -> Rational(1, 3))),
     )
   }
 
   it should "return an Always when given a traversable with one element" in {
-    assert(ProbabilityDistribution.allElementsEvenly(List("hello")) === Right(Always("hello")))
+    assert(ProbabilityDistribution.allElementsEvenly(List("hello")) === Some(Always("hello")))
   }
 
   it should "fail if no possibilities are supplied" in {
     val actualResult = ProbabilityDistribution.allElementsEvenly(Nil)
 
-    val expectedResult = Left(NoPossibilitiesProvided)
+    val expectedResult = None
 
     assert(actualResult === expectedResult)
   }
 
-  "constructing a probability measure" should "fail if no possibilities are supplied" in {
-    val attemptedProbabilityMeasure = ProbabilityDistribution()
+  "constructing a probability distribution" should "fail if no possibilities are supplied" in {
+    val attemptedProbabilityDistribution = ProbabilityDistribution()
 
-    assert(attemptedProbabilityMeasure === Left(ConstructionError.NoPossibilitiesProvided))
+    assert(attemptedProbabilityDistribution === Left(ConstructionError.NoPossibilitiesProvided))
   }
 
   it should "fail if any probability is less than 0" in {
-    val attemptedProbabilityMeasure =
+    val attemptedProbabilityDistribution =
       ProbabilityDistribution(
         "hello" -> RationalProbability.makeUnsafe(-1),
         "world" -> RationalProbability.makeUnsafe(-1),
@@ -274,11 +273,11 @@ class ProbabilityDistributionSpec extends FlatSpec {
         ConstructionError
           .InvalidProbabilityForKey("hello", Probability.Exception.Invalid(RationalProbability.makeUnsafe(-1, 1))))
 
-    assert(attemptedProbabilityMeasure === expectedOutput)
+    assert(attemptedProbabilityDistribution === expectedOutput)
   }
 
   it should "fail if any probability is greater than 1" in {
-    val attemptedProbabilityMeasure =
+    val attemptedProbabilityDistribution =
       ProbabilityDistribution(
         "hello" -> RationalProbability.makeUnsafe(2),
         "world" -> RationalProbability.makeUnsafe(2),
@@ -290,11 +289,11 @@ class ProbabilityDistributionSpec extends FlatSpec {
         ConstructionError
           .InvalidProbabilityForKey("hello", Probability.Exception.Invalid(RationalProbability.makeUnsafe(2, 1))))
 
-    assert(attemptedProbabilityMeasure === expectedOutput)
+    assert(attemptedProbabilityDistribution === expectedOutput)
   }
 
   it should "fail if the probabilities do not add up to 1" in {
-    val attemptedProbabilityMeasure =
+    val attemptedProbabilityDistribution =
       ProbabilityDistribution(
         "hello" -> RationalProbability.makeUnsafe(1, 3),
         "world" -> RationalProbability.makeUnsafe(1, 3),
@@ -302,41 +301,41 @@ class ProbabilityDistributionSpec extends FlatSpec {
 
     val expectedOutput = Left(ConstructionError.ProbabilitiesDontSumToOne)
 
-    assert(attemptedProbabilityMeasure === expectedOutput)
+    assert(attemptedProbabilityDistribution === expectedOutput)
   }
 
   it should "produce an Always if only one possibility is supplied" in {
-    val attemptedProbabilityMeasure = ProbabilityDistribution("hello" -> RationalProbability.one)
+    val attemptedProbabilityDistribution = ProbabilityDistribution("hello" -> RationalProbability.one)
 
     val expectedOutput = Right(Always("hello"))
 
-    assert(attemptedProbabilityMeasure === expectedOutput)
+    assert(attemptedProbabilityDistribution === expectedOutput)
   }
 
   it should "produce an Always if only one possibility is supplied twice" in {
-    val attemptedProbabilityMeasure = ProbabilityDistribution(
+    val attemptedProbabilityDistribution = ProbabilityDistribution(
       "hello" -> RationalProbability.makeUnsafe(1, 2),
       "hello" -> RationalProbability.makeUnsafe(1, 2),
     )
 
     val expectedOutput = Right(Always("hello"))
 
-    assert(attemptedProbabilityMeasure === expectedOutput)
+    assert(attemptedProbabilityDistribution === expectedOutput)
   }
 
   it should "produce a Varied if more than one possibility is supplied" in {
-    val attemptedProbabilityMeasure = ProbabilityDistribution(
+    val attemptedProbabilityDistribution = ProbabilityDistribution(
       "hello" -> RationalProbability.makeUnsafe(1, 3),
       "world" -> RationalProbability.makeUnsafe(2, 3),
     )
 
     val expectedOutput = Right(makeVaried("hello" -> Rational(1, 3), "world" -> Rational(2, 3)))
 
-    assert(attemptedProbabilityMeasure === expectedOutput)
+    assert(attemptedProbabilityDistribution === expectedOutput)
   }
 
   it should "remove zero probabilities" in {
-    val attemptedProbabilityMeasure =
+    val attemptedProbabilityDistribution =
       ProbabilityDistribution(
         "hello" -> RationalProbability.makeUnsafe(1, 3),
         "world" -> RationalProbability.makeUnsafe(2, 3),
@@ -345,7 +344,7 @@ class ProbabilityDistributionSpec extends FlatSpec {
 
     val expectedOutput = Right(makeVaried("hello" -> Rational(1, 3), "world" -> Rational(2, 3)))
 
-    assert(attemptedProbabilityMeasure === expectedOutput)
+    assert(attemptedProbabilityDistribution === expectedOutput)
   }
 
 }

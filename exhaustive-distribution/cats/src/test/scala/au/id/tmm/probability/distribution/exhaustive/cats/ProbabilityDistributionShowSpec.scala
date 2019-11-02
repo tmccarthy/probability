@@ -13,14 +13,14 @@ class ProbabilityDistributionShowSpec extends org.scalatest.FlatSpec {
   private implicit val showUnderTest: ProbabilityMeasureShow[String] =
     new ProbabilityMeasureShow[String]
 
-  "the probability measure show" should "render an always probability measure" in {
-    assert((Always("hello"): ProbabilityDistribution[String]).show === "ProbabilityMeasure(hello -> 1)")
+  "the probability distribution show" should "render an always probability distribution" in {
+    assert((Always("hello"): ProbabilityDistribution[String]).show === "ProbabilityDistribution(hello -> 1)")
   }
 
-  it should "render a varied probability measure" in {
+  it should "render a varied probability distribution" in {
     assert(
       (ProbabilityDistribution.evenly("hello", "world"): ProbabilityDistribution[String]).show ===
-        "ProbabilityMeasure(hello -> 1/2, world -> 1/2)")
+        "ProbabilityDistribution(hello -> 1/2, world -> 1/2)")
   }
 
 }
