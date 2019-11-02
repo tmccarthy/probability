@@ -1,4 +1,4 @@
-package au.id.tmm.probability.distribution.exhaustive.cats
+package au.id.tmm.probability.rational.cats
 
 import au.id.tmm.probability.cats._
 import au.id.tmm.probability.rational.RationalProbability
