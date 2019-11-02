@@ -80,7 +80,7 @@ object ProbabilityDistribution {
     apply(asMap.toSeq: _*)
 
   def apply[A](branches: (A, RationalProbability)*): Either[ConstructionError, ProbabilityDistribution[A]] = {
-    val builder = new ProbabilityMeasureBuilder[A]
+    val builder = new ProbabilityDistributionBuilder[A]
 
     builder.sizeHint(branches.size)
 
@@ -89,7 +89,7 @@ object ProbabilityDistribution {
     builder.result()
   }
 
-  private[exhaustive] final class ProbabilityMeasureBuilder[A] {
+  private[exhaustive] final class ProbabilityDistributionBuilder[A] {
     private val underlying: mutable.Map[A, RationalProbability] = mutable.Map.empty
 
     private var runningTotalProbability: RationalProbability                  = RationalProbability.zero
@@ -177,7 +177,7 @@ object ProbabilityDistribution {
     override def chanceOf(outcome: A): RationalProbability = asMap.getOrElse(outcome, RationalProbability.zero)
 
     override def map[U](f: A => U): ProbabilityDistribution[U] = {
-      val builder = new ProbabilityMeasureBuilder[U]
+      val builder = new ProbabilityDistributionBuilder[U]
 
       builder.sizeHint(asMap.size)
 
@@ -187,7 +187,7 @@ object ProbabilityDistribution {
     }
 
     override def flatMap[U](f: A => ProbabilityDistribution[U]): ProbabilityDistribution[U] = {
-      val builder = new ProbabilityMeasureBuilder[U]
+      val builder = new ProbabilityDistributionBuilder[U]
 
       builder.sizeHint(asMap.size)
 

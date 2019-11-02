@@ -10,8 +10,8 @@ import com.github.ghik.silencer.silent
 @silent("deprecated")
 class ProbabilityDistributionShowSpec extends org.scalatest.FlatSpec {
 
-  private implicit val showUnderTest: ProbabilityMeasureShow[String] =
-    new ProbabilityMeasureShow[String]
+  private implicit val showUnderTest: ProbabilityDistributionShow[String] =
+    new ProbabilityDistributionShow[String]
 
   "the probability distribution show" should "render an always probability distribution" in {
     assert((Always("hello"): ProbabilityDistribution[String]).show === "ProbabilityDistribution(hello -> 1)")

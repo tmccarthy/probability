@@ -6,5 +6,5 @@ import cats.kernel.laws.discipline.HashTests
 import cats.tests.CatsSuite
 
 class ProbabilityDistributionHashSpec extends CatsSuite {
-  checkAll("probabilityMeasure", HashTests[ProbabilityDistribution[String]].hash)
+  checkAll("probabilityDistribution", HashTests[ProbabilityDistribution[String]].hash)
 }
