@@ -16,9 +16,10 @@ lazy val root = project
     coreScalacheck,
     coreCats,
     coreApacheMath,
-    measure,
-    measureCirce,
-    measureCats,
+    exhaustiveDistribution,
+    exhaustiveDistributionCirce,
+    exhaustiveDistributionCats,
+    exhaustiveDistributionScalacheck,
   )
 
 lazy val core = project
@@ -56,34 +57,34 @@ lazy val coreApacheMath = project
   )
   .dependsOn(core)
 
-lazy val measure = project
-  .in(file("measure/core"))
-  .settings(settingsHelper.settingsForSubprojectCalled("measure"))
+lazy val exhaustiveDistribution = project
+  .in(file("exhaustive-distribution/core"))
+  .settings(settingsHelper.settingsForSubprojectCalled("exhaustive-distribution"))
   .settings(spireDependency)
   .dependsOn(core, core % "test->test")
 
-lazy val measureCirce = project
-  .in(file("measure/circe"))
-  .settings(settingsHelper.settingsForSubprojectCalled("measure-circe"))
+lazy val exhaustiveDistributionCirce = project
+  .in(file("exhaustive-distribution/circe"))
+  .settings(settingsHelper.settingsForSubprojectCalled("exhaustive-distribution-circe"))
   .settings(circeDependency)
-  .dependsOn(measure)
+  .dependsOn(exhaustiveDistribution)
 
-lazy val measureScalacheck = project
-  .in(file("measure/scalacheck"))
-  .settings(settingsHelper.settingsForSubprojectCalled("measure-scalacheck"))
+lazy val exhaustiveDistributionScalacheck = project
+  .in(file("exhaustive-distribution/scalacheck"))
+  .settings(settingsHelper.settingsForSubprojectCalled("exhaustive-distribution-scalacheck"))
   .settings(scalacheckDependency)
-  .dependsOn(measure)
+  .dependsOn(exhaustiveDistribution)
 
-lazy val measureCats = project
-  .in(file("measure/cats"))
-  .settings(settingsHelper.settingsForSubprojectCalled("measure-cats"))
+lazy val exhaustiveDistributionCats = project
+  .in(file("exhaustive-distribution/cats"))
+  .settings(settingsHelper.settingsForSubprojectCalled("exhaustive-distribution-cats"))
   .settings(
     catsDependency,
     catsTestKitDependency,
     libraryDependencies += "au.id.tmm.intime" %% "intime-scalacheck" % "1.0.2" % "test",
     libraryDependencies += "au.id.tmm.intime" %% "intime-cats"       % "1.0.2" % "test",
   )
-  .dependsOn(measure, coreCats, measureScalacheck % "test->compile")
+  .dependsOn(exhaustiveDistribution, coreCats, exhaustiveDistributionScalacheck % "test->compile")
 
 addCommandAlias("check", ";+test;scalafmtCheckAll")
 addCommandAlias("cover", ";clean;coverage;test;coverageAggregate")
