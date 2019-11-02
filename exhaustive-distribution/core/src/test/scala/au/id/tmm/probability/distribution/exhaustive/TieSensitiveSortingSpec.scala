@@ -49,7 +49,8 @@ class TieSensitiveSortingSpec extends FlatSpec {
       "D" -> 3,
     )
 
-    val actualResult: ProbabilityDistribution[List[String]] = TieSensitiveSorting.sort(scores.keySet)(Ordering.by(scores))
+    val actualResult: ProbabilityDistribution[List[String]] =
+      TieSensitiveSorting.sort(scores.keySet)(Ordering.by(scores))
 
     val expectedResult = ProbabilityDistribution.evenly(
       List("A", "B", "C", "D"),

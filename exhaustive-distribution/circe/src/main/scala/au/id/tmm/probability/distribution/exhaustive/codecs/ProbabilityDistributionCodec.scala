@@ -30,7 +30,7 @@ trait ProbabilityDistributionCodec {
       asMap = elements.toMap
       probabilityDistribution <- ProbabilityDistribution(asMap) match {
         case Right(probabilityDistribution) => Right(probabilityDistribution)
-        case Left(constructionError)   => Left(DecodingFailure(constructionError.toString, c.history))
+        case Left(constructionError)        => Left(DecodingFailure(constructionError.toString, c.history))
       }
     } yield probabilityDistribution
   }

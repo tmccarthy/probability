@@ -69,9 +69,7 @@ object ProbabilityDistribution {
   def allElementsEvenly[A](possibilities: NonEmptyList[A]): ProbabilityDistribution[A] =
     evenly[A](possibilities.head, possibilities.tail: _*)
 
-  def allElementsEvenly[A](
-    possibilities: Iterable[A],
-  ): Option[ProbabilityDistribution[A]] =
+  def allElementsEvenly[A](possibilities: Iterable[A]): Option[ProbabilityDistribution[A]] =
     if (possibilities.isEmpty) {
       None
     } else {

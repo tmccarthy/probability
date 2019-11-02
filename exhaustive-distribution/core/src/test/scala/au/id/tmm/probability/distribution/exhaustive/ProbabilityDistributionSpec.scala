@@ -147,7 +147,8 @@ class ProbabilityDistributionSpec extends FlatSpec {
   it can "be flatMapped when there is outcome spreading" in {
     val varied = makeVaried("hello" -> Rational(1, 3), "wherld" -> Rational(2, 3))
 
-    val mappingFunction: String => ProbabilityDistribution[Int] = s => ProbabilityDistribution.evenly(s.length, s.length + 1)
+    val mappingFunction: String => ProbabilityDistribution[Int] =
+      s => ProbabilityDistribution.evenly(s.length, s.length + 1)
 
     val expectedAfterMap = makeVaried(5 -> Rational(1, 6), 6 -> Rational(1, 2), 7 -> Rational(2, 6))
 

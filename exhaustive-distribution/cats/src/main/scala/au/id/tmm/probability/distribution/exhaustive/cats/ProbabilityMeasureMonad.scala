@@ -14,7 +14,11 @@ object ProbabilityMeasureMonad extends CommutativeMonad[ProbabilityDistribution]
 
   override def map[A, B](fa: ProbabilityDistribution[A])(f: A => B): ProbabilityDistribution[B] = fa.map(f)
 
-  override def flatMap[A, B](fa: ProbabilityDistribution[A])(f: A => ProbabilityDistribution[B]): ProbabilityDistribution[B] =
+  override def flatMap[A, B](
+    fa: ProbabilityDistribution[A],
+  )(
+    f: A => ProbabilityDistribution[B],
+  ): ProbabilityDistribution[B] =
     fa.flatMap(f)
 
   //noinspection ScalaDeprecation

@@ -11,6 +11,8 @@ import cats.tests.CatsSuite
 
 class ProbabilityDistributionMonadSpec extends CatsSuite {
 
-  checkAll("probabilityMeasure", CommutativeMonadTests[ProbabilityDistribution].commutativeMonad[String, LocalDate, Month])
+  checkAll(
+    "probabilityMeasure",
+    CommutativeMonadTests[ProbabilityDistribution].commutativeMonad[String, LocalDate, Month])
 
 }

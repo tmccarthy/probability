@@ -27,7 +27,8 @@ package object scalacheck {
   @silent("deprecated")
   private def doShrink(p: RationalProbability): Stream[RationalProbability] = p match {
     case RationalProbability.zero => Stream.empty
-    case p if Ordering[RationalProbability].lt(p, RationalProbability.makeUnsafe(1, 100000)) => Stream(RationalProbability.zero)
+    case p if Ordering[RationalProbability].lt(p, RationalProbability.makeUnsafe(1, 100000)) =>
+      Stream(RationalProbability.zero)
     case _ => {
       val next = p / 2
 
@@ -40,8 +41,8 @@ package object scalacheck {
   implicit val chooseRationalProbability: Choose[RationalProbability] =
     (min, max) => {
       val commonDenominator = min.asRational.denominator * max.asRational.denominator
-      val minNumerator = min.asRational.numerator * max.asRational.denominator
-      val maxNumerator = max.asRational.numerator * min.asRational.denominator
+      val minNumerator      = min.asRational.numerator * max.asRational.denominator
+      val maxNumerator      = max.asRational.numerator * min.asRational.denominator
 
       for {
         numerator <- Gen.choose(minNumerator, maxNumerator)
