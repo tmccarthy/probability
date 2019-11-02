@@ -1,5 +1,6 @@
 package au.id.tmm.probability.distribution.exhaustive
 
+import au.id.tmm.probability.distribution.ProbabilityDistributionTypeclass
 import au.id.tmm.probability.rational.RationalProbability
 import au.id.tmm.probability.{NonEmptyList, Probability}
 
@@ -40,6 +41,9 @@ sealed trait ProbabilityDistribution[A] {
 
 object ProbabilityDistribution {
 
+  implicit val probabilityDistributionInstance: ProbabilityDistributionTypeclass[ProbabilityDistribution] =
+    ExhaustiveProbabilityDistributionInstance
+
   def evenly[A](firstPossibility: A, otherPossibilities: A*): ProbabilityDistribution[A] =
     headTailEvenly(firstPossibility, otherPossibilities)
 
@@ -67,11 +71,11 @@ object ProbabilityDistribution {
 
   def allElementsEvenly[A](
     possibilities: Iterable[A],
-  ): Either[ConstructionError.NoPossibilitiesProvided.type, ProbabilityDistribution[A]] =
+  ): Option[ProbabilityDistribution[A]] =
     if (possibilities.isEmpty) {
-      Left(ConstructionError.NoPossibilitiesProvided)
+      None
     } else {
-      Right(evenly[A](possibilities.head, possibilities.tail.toSeq: _*))
+      Some(evenly[A](possibilities.head, possibilities.tail.toSeq: _*))
     }
 
   def apply[A](asMap: Map[A, RationalProbability]): Either[ConstructionError, ProbabilityDistribution[A]] =

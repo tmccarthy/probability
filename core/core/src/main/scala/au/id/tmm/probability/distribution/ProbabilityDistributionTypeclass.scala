@@ -8,7 +8,7 @@ trait ProbabilityDistributionTypeclass[Distribution[_]] {
 
   def flatMap[A, B](aDistribution: Distribution[A])(f: A => Distribution[B]): Distribution[B]
 
-  def map[A, B](aDistribution: Distribution[A])(f: A => B): Distribution[B] = flatMap(aDistribution)(a => always(f(a)))
+  def map[A, B](aDistribution: Distribution[A])(f: A => B): Distribution[B]
 
   def fromWeights[A, N : Numeric](weightsPerElement: Seq[(A, N)]): Option[Distribution[A]]
 
