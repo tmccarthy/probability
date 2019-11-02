@@ -10,9 +10,7 @@ trait ProbabilityDistributionTypeclass[Distribution[_]] {
 
   def map[A, B](aDistribution: Distribution[A])(f: A => B): Distribution[B] = flatMap(aDistribution)(a => always(f(a)))
 
-  def fromWeights[A, N : Numeric](
-    weightsPerElement: Seq[(A, N)],
-  ): Option[Distribution[A]]
+  def fromWeights[A, N : Numeric](weightsPerElement: Seq[(A, N)]): Option[Distribution[A]]
 
   def headTailWeights[A, N : Numeric](firstWeight: (A, N), otherWeights: Seq[(A, N)]): Distribution[A]
 
@@ -24,11 +22,15 @@ trait ProbabilityDistributionTypeclass[Distribution[_]] {
 
 object ProbabilityDistributionTypeclass {
 
-  def apply[Distribution[_]: ProbabilityDistributionTypeclass]: ProbabilityDistributionTypeclass[Distribution] =
+  def apply[Distribution[_] : ProbabilityDistributionTypeclass]: ProbabilityDistributionTypeclass[Distribution] =
     implicitly[ProbabilityDistributionTypeclass[Distribution]]
 
-  implicit class Ops[Distribution[_], A](distribution: Distribution[A])(implicit probabilityDistributionTypeclass: ProbabilityDistributionTypeclass[Distribution]) {
-    def map[B](f: A => B): Distribution[B] = probabilityDistributionTypeclass.map(distribution)(f)
+  implicit class Ops[Distribution[_], A](
+    distribution: Distribution[A],
+  )(implicit
+    probabilityDistributionTypeclass: ProbabilityDistributionTypeclass[Distribution],
+  ) {
+    def map[B](f: A => B): Distribution[B]                   = probabilityDistributionTypeclass.map(distribution)(f)
     def flatMap[B](f: A => Distribution[B]): Distribution[B] = probabilityDistributionTypeclass.flatMap(distribution)(f)
   }
 

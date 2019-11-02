@@ -27,7 +27,7 @@ final class ProbabilityDistribution[+A] private (private val sample: () => A) {
 }
 
 object ProbabilityDistribution
-  extends UniformProbabilityDistributionFactories
+    extends UniformProbabilityDistributionFactories
     with QuantileBasedDiscreteProbabilityDistributionFactories
     with WeightedDiscreteProbabilityDistributionFactories {
 

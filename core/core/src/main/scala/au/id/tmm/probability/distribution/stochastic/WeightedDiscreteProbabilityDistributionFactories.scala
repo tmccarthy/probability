@@ -7,9 +7,7 @@ import scala.collection.{Seq, mutable}
 
 trait WeightedDiscreteProbabilityDistributionFactories { this: QuantileBasedDiscreteProbabilityDistributionFactories =>
 
-  def fromWeights[A, N : Numeric](
-    weightsPerElement: Seq[(A, N)],
-  ): Option[ProbabilityDistribution[A]] = {
+  def fromWeights[A, N : Numeric](weightsPerElement: Seq[(A, N)]): Option[ProbabilityDistribution[A]] = {
     if (weightsPerElement.isEmpty) return None
     if (weightsPerElement.size == 1) return Some(ProbabilityDistribution.always(weightsPerElement.head._1))
 

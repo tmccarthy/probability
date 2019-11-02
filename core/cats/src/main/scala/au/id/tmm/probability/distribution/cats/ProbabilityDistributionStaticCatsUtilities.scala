@@ -1,9 +1,16 @@
 package au.id.tmm.probability.distribution.cats
 
 import au.id.tmm.probability.distribution.ProbabilityDistributionTypeclass
-import cats.data.{NonEmptyList => CatsNonEmptyList, NonEmptySet => CatsNonEmptySet, NonEmptyVector => CatsNonEmptyVector}
+import cats.data.{
+  NonEmptyList => CatsNonEmptyList,
+  NonEmptySet => CatsNonEmptySet,
+  NonEmptyVector => CatsNonEmptyVector,
+}
 
-class ProbabilityDistributionStaticCatsUtilities[Distribution[_]](implicit instance: ProbabilityDistributionTypeclass[Distribution]) {
+class ProbabilityDistributionStaticCatsUtilities[Distribution[_]](
+  implicit
+  instance: ProbabilityDistributionTypeclass[Distribution],
+) {
 
   def allElementsEvenly[A](catsNonEmptyList: CatsNonEmptyList[A]): Distribution[A] =
     instance.headTailEvenly(catsNonEmptyList.head, catsNonEmptyList.tail)

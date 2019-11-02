@@ -25,9 +25,7 @@ trait UniformProbabilityDistributionFactories {
   def allElementsEvenly[A](nonEmptyList: NonEmptyList[A]): ProbabilityDistribution[A] =
     headTailEvenly(nonEmptyList.head, nonEmptyList.tail)
 
-  def allElementsEvenly[A](
-    iterable: Iterable[A],
-  ): Option[ProbabilityDistribution[A]] =
+  def allElementsEvenly[A](iterable: Iterable[A]): Option[ProbabilityDistribution[A]] =
     if (iterable.isEmpty) None
     else Some(headTailEvenly(iterable.head, iterable.tail))
 
