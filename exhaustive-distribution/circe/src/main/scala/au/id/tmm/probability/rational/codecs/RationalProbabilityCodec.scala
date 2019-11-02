@@ -1,4 +1,4 @@
-package au.id.tmm.probability.distribution.exhaustive.codecs
+package au.id.tmm.probability.rational.codecs
 
 import au.id.tmm.probability.rational.RationalProbability
 import io.circe.{Decoder, DecodingFailure, Encoder, Json}

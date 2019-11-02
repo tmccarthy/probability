@@ -8,8 +8,8 @@ import org.scalatest.FlatSpec
 
 class ProbabilityDistributionCodecSpec extends FlatSpec {
 
-  "the probability measure encoder" should "encode a varied probability measure" in {
-    val probabilityMeasure = ProbabilityDistribution(
+  "the probability distribution encoder" should "encode a varied probability distribution" in {
+    val probabilityDistribution = ProbabilityDistribution(
       "hello" -> RationalProbability.makeUnsafe(1, 3),
       "world" -> RationalProbability.makeUnsafe(2, 3),
     ).getOrElse(throw new AssertionError)
@@ -25,11 +25,11 @@ class ProbabilityDistributionCodecSpec extends FlatSpec {
       ),
     )
 
-    assert(probabilityMeasure.asJson === expectedJson)
+    assert(probabilityDistribution.asJson === expectedJson)
   }
 
-  it should "encode an always probability measure" in {
-    val probabilityMeasure = ProbabilityDistribution.Always("hello"): ProbabilityDistribution[String]
+  it should "encode an always probability distribution" in {
+    val probabilityDistribution = ProbabilityDistribution.Always("hello"): ProbabilityDistribution[String]
 
     val expectedJson = Json.arr(
       Json.obj(
@@ -38,10 +38,10 @@ class ProbabilityDistributionCodecSpec extends FlatSpec {
       ),
     )
 
-    assert(probabilityMeasure.asJson === expectedJson)
+    assert(probabilityDistribution.asJson === expectedJson)
   }
 
-  "the probability measure decoder" should "decode a varied probability measure" in {
+  "the probability distribution decoder" should "decode a varied probability distribution" in {
     val json = Json.arr(
       Json.obj(
         "probability" -> Json.fromString("1/3"),
@@ -53,15 +53,15 @@ class ProbabilityDistributionCodecSpec extends FlatSpec {
       ),
     )
 
-    val expectedProbabilityMeasure = ProbabilityDistribution(
+    val expectedProbabilityDistribution = ProbabilityDistribution(
       "hello" -> RationalProbability.makeUnsafe(1, 3),
       "world" -> RationalProbability.makeUnsafe(2, 3),
     ).getOrElse(throw new AssertionError)
 
-    assert(json.as[ProbabilityDistribution[String]] === Right(expectedProbabilityMeasure))
+    assert(json.as[ProbabilityDistribution[String]] === Right(expectedProbabilityDistribution))
   }
 
-  it should "decode an always probability measure" in {
+  it should "decode an always probability distribution" in {
     val json = Json.arr(
       Json.obj(
         "probability" -> Json.fromString("1"),
@@ -69,12 +69,12 @@ class ProbabilityDistributionCodecSpec extends FlatSpec {
       ),
     )
 
-    val expectedProbabilityMeasure = ProbabilityDistribution.Always("hello")
+    val expectedProbabilityDistribution = ProbabilityDistribution.Always("hello")
 
-    assert(json.as[ProbabilityDistribution[String]] === Right(expectedProbabilityMeasure))
+    assert(json.as[ProbabilityDistribution[String]] === Right(expectedProbabilityDistribution))
   }
 
-  it should "fail to decode an invalid probability measure" in {
+  it should "fail to decode an invalid probability distribution" in {
     val json = Json.arr(
       Json.obj(
         "probability" -> Json.fromString("1/3"),
@@ -83,7 +83,7 @@ class ProbabilityDistributionCodecSpec extends FlatSpec {
     )
 
     assert(json.as[ProbabilityDistribution[String]].left.map(_.getMessage()) ===
-      Left("au.id.tmm.probability.measure.ProbabilityMeasure$ConstructionError$ProbabilitiesDontSumToOne$: ProbabilitiesDontSumToOne()"))
+      Left("au.id.tmm.probability.distribution.exhaustive.ProbabilityDistribution$ConstructionError$ProbabilitiesDontSumToOne$: ProbabilitiesDontSumToOne()"))
   }
 
 }

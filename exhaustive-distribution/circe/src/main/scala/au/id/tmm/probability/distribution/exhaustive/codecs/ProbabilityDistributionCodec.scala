@@ -2,15 +2,16 @@ package au.id.tmm.probability.distribution.exhaustive.codecs
 
 import au.id.tmm.probability.distribution.exhaustive.ProbabilityDistribution
 import au.id.tmm.probability.rational.RationalProbability
+import au.id.tmm.probability.rational.codecs._
 import io.circe.syntax.EncoderOps
 import io.circe.{Decoder, DecodingFailure, Encoder, Json}
 
-trait ProbabilityMeasureCodec {
+trait ProbabilityDistributionCodec {
 
-  implicit def encodeProbabilityMeasure[A : Encoder]: Encoder[ProbabilityDistribution[A]] =
-    Encoder { probabilityMeasure =>
+  implicit def encodeProbabilityDistribution[A : Encoder]: Encoder[ProbabilityDistribution[A]] =
+    Encoder { probabilityDistribution =>
       Json.arr(
-        probabilityMeasure.asMap.toVector
+        probabilityDistribution.asMap.toVector
           .sortBy { case (_, probability) => probability }
           .reverse
           .map {
@@ -23,18 +24,18 @@ trait ProbabilityMeasureCodec {
       )
     }
 
-  implicit def decodeProbabilityMeasure[A : Decoder]: Decoder[ProbabilityDistribution[A]] = Decoder { c =>
+  implicit def decodeProbabilityDistribution[A : Decoder]: Decoder[ProbabilityDistribution[A]] = Decoder { c =>
     for {
-      elements <- c.as[List[(A, RationalProbability)]](Decoder.decodeList(decodeProbabilityMeasureElement))
+      elements <- c.as[List[(A, RationalProbability)]](Decoder.decodeList(decodeProbabilityDistributionElement))
       asMap = elements.toMap
-      probabilityMeasure <- ProbabilityDistribution(asMap) match {
-        case Right(probabilityMeasure) => Right(probabilityMeasure)
+      probabilityDistribution <- ProbabilityDistribution(asMap) match {
+        case Right(probabilityDistribution) => Right(probabilityDistribution)
         case Left(constructionError)   => Left(DecodingFailure(constructionError.toString, c.history))
       }
-    } yield probabilityMeasure
+    } yield probabilityDistribution
   }
 
-  private def decodeProbabilityMeasureElement[A : Decoder]: Decoder[(A, RationalProbability)] = Decoder { c =>
+  private def decodeProbabilityDistributionElement[A : Decoder]: Decoder[(A, RationalProbability)] = Decoder { c =>
     for {
       probability <- c.downField("probability").as[RationalProbability]
       outcome     <- c.downField("outcome").as[A]
@@ -43,4 +44,4 @@ trait ProbabilityMeasureCodec {
 
 }
 
-object ProbabilityMeasureCodec extends ProbabilityMeasureCodec
+object ProbabilityDistributionCodec extends ProbabilityDistributionCodec
