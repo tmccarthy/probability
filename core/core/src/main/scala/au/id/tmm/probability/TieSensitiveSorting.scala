@@ -46,7 +46,6 @@ final class TieSensitiveSorting[Distribution[_]] private (
 
       typeclassInstance.always(ArraySeq.unsafeWrapArray(array))
     } else {
-      // TODO this bit is really slow
       var accumulatedProbabilityDistribution: Distribution[ArraySeq[A]] = typeclassInstance.always(ArraySeq.empty)
 
       equivalentValues.foreach { values =>
