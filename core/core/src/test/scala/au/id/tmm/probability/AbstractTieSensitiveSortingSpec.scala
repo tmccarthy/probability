@@ -1,13 +1,22 @@
-package au.id.tmm.probability.distribution.exhaustive
+package au.id.tmm.probability
 
-import au.id.tmm.probability.TieSensitiveSorting
+import au.id.tmm.probability.distribution.ProbabilityDistributionTypeclass
+import org.scalactic.Equality
 import org.scalatest.FlatSpec
 
 import scala.collection.immutable.ArraySeq
 
-class TieSensitiveSortingSpec extends FlatSpec {
+abstract class AbstractTieSensitiveSortingSpec[Distribution[_] : ProbabilityDistributionTypeclass] extends FlatSpec {
 
-  private val tieSensitiveSorting = TieSensitiveSorting[ProbabilityDistribution]
+  protected implicit def equalityFor[A]: Equality[Distribution[A]]
+  private implicit def optionEquality[A]: Equality[Option[Distribution[A]]] = {
+    case (left: Some[Distribution[A]], right: Some[Distribution[A]]) => equalityFor[A].areEqual(left.get, right.get)
+    case (None, None) => true
+    case _ => false
+  }
+
+  private val Distribution = implicitly[ProbabilityDistributionTypeclass[Distribution]]
+  private val tieSensitiveSorting = TieSensitiveSorting[Distribution]
 
   "the minimum of an empty set" should "be nothing" in {
     assert(tieSensitiveSorting.min(Set[Int]()) === None)
@@ -16,7 +25,7 @@ class TieSensitiveSortingSpec extends FlatSpec {
   "the minimum of a list with no duplicates" should "be the minimum" in {
     val list = List(1, 2, 3)
 
-    assert(tieSensitiveSorting.min(list) === Some(ProbabilityDistribution.Always(1)))
+    assert(tieSensitiveSorting.min(list) === Some(Distribution.always(1)))
   }
 
   "the minimum of a list with some duplicates" should "be an evenly distributed probability across all the minimums" in {
@@ -29,7 +38,7 @@ class TieSensitiveSortingSpec extends FlatSpec {
 
     val scoreFn: String => Int = _.length
 
-    val expectedMin = ProbabilityDistribution.evenly("cat", "dog")
+    val expectedMin = Distribution.evenly("cat", "dog")
 
     val actualMin = tieSensitiveSorting.minBy(list)(Ordering.by(scoreFn))
 
@@ -39,9 +48,9 @@ class TieSensitiveSortingSpec extends FlatSpec {
   "a set with no tied elements" should "have only one outcome" in {
     val set = Set(4, 2, 1, 5, 3)
 
-    val actualResult: ProbabilityDistribution[ArraySeq[Int]] = tieSensitiveSorting.sort(set)
+    val actualResult: Distribution[ArraySeq[Int]] = tieSensitiveSorting.sort(set)
 
-    val expectedResult = ProbabilityDistribution.Always(List(1, 2, 3, 4, 5))
+    val expectedResult = Distribution.always(List(1, 2, 3, 4, 5))
 
     assert(actualResult === expectedResult)
   }
@@ -54,10 +63,10 @@ class TieSensitiveSortingSpec extends FlatSpec {
       "D" -> 3,
     )
 
-    val actualResult: ProbabilityDistribution[ArraySeq[String]] =
+    val actualResult: Distribution[ArraySeq[String]] =
       tieSensitiveSorting.sortBy(scores.keySet)(Ordering.by(scores))
 
-    val expectedResult = ProbabilityDistribution.evenly(
+    val expectedResult = Distribution.evenly(
       List("A", "B", "C", "D"),
       List("A", "C", "B", "D"),
     )
@@ -77,10 +86,10 @@ class TieSensitiveSortingSpec extends FlatSpec {
       "G" -> 5,
     )
 
-    val actualResult: ProbabilityDistribution[ArraySeq[String]] =
+    val actualResult: Distribution[ArraySeq[String]] =
       tieSensitiveSorting.sortBy(scores.keySet)(Ordering.by(scores))
 
-    val expectedResult = ProbabilityDistribution.evenly(
+    val expectedResult = Distribution.evenly(
       List("A", "B", "C", "D", "E", "F", "G"),
       List("A", "B", "C", "F", "D", "E", "G"),
       List("A", "B", "C", "E", "D", "F", "G"),

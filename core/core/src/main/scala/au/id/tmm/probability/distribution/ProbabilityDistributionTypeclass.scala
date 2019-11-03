@@ -18,6 +18,8 @@ trait ProbabilityDistributionTypeclass[Distribution[_]] {
 
   def allElementsEvenly[A](iterable: Iterable[A]): Option[Distribution[A]]
 
+  def evenly[A](head: A, tail: A*): Distribution[A] = headTailEvenly(head, tail)
+
 }
 
 object ProbabilityDistributionTypeclass {

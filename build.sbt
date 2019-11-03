@@ -62,7 +62,7 @@ lazy val coreTesting = project
   .in(file("core/testing"))
   .settings(settingsHelper.settingsForSubprojectCalled("core-testing"))
   .settings(libraryDependencies += scalatestDependency)
-  .dependsOn(core, coreApacheMath)
+  .dependsOn(core, coreApacheMath, core % "test->test")
 
 lazy val exhaustiveDistribution = project
   .in(file("distribution-exhaustive/core"))
