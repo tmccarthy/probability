@@ -11,11 +11,11 @@ abstract class AbstractTieSensitiveSortingSpec[Distribution[_] : ProbabilityDist
   protected implicit def equalityFor[A]: Equality[Distribution[A]]
   private implicit def optionEquality[A]: Equality[Option[Distribution[A]]] = {
     case (left: Some[Distribution[A]], right: Some[Distribution[A]]) => equalityFor[A].areEqual(left.get, right.get)
-    case (None, None) => true
-    case _ => false
+    case (None, None)                                                => true
+    case _                                                           => false
   }
 
-  private val Distribution = implicitly[ProbabilityDistributionTypeclass[Distribution]]
+  private val Distribution        = implicitly[ProbabilityDistributionTypeclass[Distribution]]
   private val tieSensitiveSorting = TieSensitiveSorting[Distribution]
 
   "the minimum of an empty set" should "be nothing" in {

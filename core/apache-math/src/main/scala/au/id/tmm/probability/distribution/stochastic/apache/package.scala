@@ -2,7 +2,11 @@ package au.id.tmm.probability.distribution.stochastic
 
 import au.id.tmm.probability.DoubleProbability
 import org.apache.commons.math3.distribution._
-import org.apache.commons.math3.exception.{MathIllegalNumberException, NotStrictlyPositiveException, NumberIsTooLargeException}
+import org.apache.commons.math3.exception.{
+  MathIllegalNumberException,
+  NotStrictlyPositiveException,
+  NumberIsTooLargeException,
+}
 import org.apache.commons.math3.random.EmpiricalDistribution
 
 package object apache {
