@@ -16,6 +16,7 @@ lazy val root = project
     coreScalacheck,
     coreCats,
     coreApacheMath,
+    coreTesting,
     exhaustiveDistribution,
     exhaustiveDistributionCirce,
     exhaustiveDistributionCats,
@@ -56,6 +57,12 @@ lazy val coreApacheMath = project
     libraryDependencies += "org.apache.commons" % "commons-math3" % "3.6.1",
   )
   .dependsOn(core)
+
+lazy val coreTesting = project
+  .in(file("core/testing"))
+  .settings(settingsHelper.settingsForSubprojectCalled("core-testing"))
+  .settings(libraryDependencies += scalatestDependency)
+  .dependsOn(core, coreApacheMath)
 
 lazy val exhaustiveDistribution = project
   .in(file("distribution-exhaustive/core"))
