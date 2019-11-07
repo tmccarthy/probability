@@ -1,8 +1,7 @@
 package au.id.tmm.probability.distribution.stochastic.testing
 
 import au.id.tmm.probability.distribution.stochastic.ProbabilityDistribution
-import au.id.tmm.probability.distribution.stochastic.apache.poisson
-import au.id.tmm.utilities.testing.syntax._
+import au.id.tmm.probability.distribution.stochastic.apache.{StrictlyPositive, poisson}
 import org.scalactic.Equality
 import org.scalatest.tagobjects.Retryable
 import org.scalatest.{FlatSpec, Outcome, Retries}
@@ -19,7 +18,7 @@ class DiscreteFrequenciesEqualitySpec extends FlatSpec with Retries {
       DiscreteFrequenciesEquality[Int](relativeErrorThreshold = 0.05)
 
     (0 to 100).foreach { _ =>
-      assert(poisson(1).get === poisson(1).get)
+      assert(poisson(StrictlyPositive.unsafe(1)) === poisson(StrictlyPositive.unsafe(1)))
     }
   }
 
