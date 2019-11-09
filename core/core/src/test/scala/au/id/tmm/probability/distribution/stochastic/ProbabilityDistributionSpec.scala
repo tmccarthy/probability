@@ -1,7 +1,6 @@
 package au.id.tmm.probability.distribution.stochastic
 
 import au.id.tmm.probability.DoubleProbability
-import au.id.tmm.probability.distribution.stochastic.ProbabilityDistribution
 import org.scalactic.Equality
 import org.scalatest.FlatSpec
 
@@ -97,6 +96,10 @@ class ProbabilityDistributionSpec extends FlatSpec {
     )
 
     assertLooksLike(distribution, expectedWeights)
+  }
+
+  "a filtered distribution" should "remove the filtered probabilities" in {
+    assertLooksLike(ProbabilityDistribution.evenly(1, 2, 3).filter(_ != 1), Map(2 -> 1, 3 -> 1))
   }
 
 }
