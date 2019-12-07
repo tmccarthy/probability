@@ -19,7 +19,13 @@ trait FnsDistributions { this: FnsApacheToProbabilityDistribution =>
     means: ArraySeq[Double],
     covariances: ArrayMatrix,
   ): ProbabilityDistribution[ArraySeq[Double]] = {
-    from(new MultivariateNormalDistribution(means.unsafeArray.asInstanceOf[Array[Double]], covariances.unsafeArray))
+    from(new MultivariateNormalDistribution(
+      means match {
+        case double: ArraySeq.ofDouble => double.unsafeArray
+        case _ => means.toArray[Double]
+      },
+      covariances.unsafeArray,
+    ))
   }
 
   def uniform(lower: Double, upper: Double): Either[NumberIsTooLargeException, ProbabilityDistribution[Double]] =

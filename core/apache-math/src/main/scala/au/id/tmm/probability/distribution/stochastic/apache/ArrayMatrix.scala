@@ -1,5 +1,7 @@
 package au.id.tmm.probability.distribution.stochastic.apache
 
+import scala.collection.immutable.ArraySeq
+
 final class ArrayMatrix private (val unsafeArray: Array[Array[Double]], width: Int, height: Int)
 
 object ArrayMatrix {
@@ -32,6 +34,17 @@ object ArrayMatrix {
 
   def unsafeWrapArray(array: Array[Array[Double]]): ArrayMatrix =
     new ArrayMatrix(array, array.length, array.headOption.map(_.length).getOrElse(0))
+
+  def diagonal(diagonals: ArraySeq[Double]): ArrayMatrix = {
+    val rows: Array[Array[Double]] = new Array(diagonals.size)
+
+    diagonals.indices.foreach { i =>
+      rows(i) = Array.fill(diagonals.length)(0d)
+      rows(i)(i) = diagonals(i)
+    }
+
+    new ArrayMatrix(rows, diagonals.size, diagonals.size)
+  }
 
   final case class RowLengthMismatchError(expectedWidth: Int, actualWidth: Int, m: Int) extends Exception {
     override def toString: String = scala.runtime.ScalaRunTime._toString(this)
