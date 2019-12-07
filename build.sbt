@@ -9,100 +9,89 @@ settingsHelper.settingsForBuild
 lazy val root = project
   .in(file("."))
   .settings(settingsHelper.settingsForRootProject)
-  .settings(console := (console in Compile in shared).value)
+  .settings(console := (console in Compile in core).value)
   .aggregate(
-    shared,
-    sharedCirce,
-    sharedScalacheck,
-    sharedCats,
-    distribution,
-    distributionCats,
-    distributionApacheMath,
-    measure,
-    measureCirce,
-    measureCats,
+    core,
+    coreCirce,
+    coreScalacheck,
+    coreCats,
+    coreApacheMath,
+    coreTesting,
+    exhaustiveDistribution,
+    exhaustiveDistributionCirce,
+    exhaustiveDistributionCats,
+    exhaustiveDistributionScalacheck,
   )
 
-lazy val shared = project
-  .in(file("shared/core"))
-  .settings(settingsHelper.settingsForSubprojectCalled("shared"))
-  .settings(spireDependency)
+lazy val core = project
+  .in(file("core/core"))
+  .settings(settingsHelper.settingsForSubprojectCalled("core"))
 
-lazy val sharedCirce = project
-  .in(file("shared/circe"))
-  .settings(settingsHelper.settingsForSubprojectCalled("shared-circe"))
+lazy val coreCirce = project
+  .in(file("core/circe"))
+  .settings(settingsHelper.settingsForSubprojectCalled("core-circe"))
   .settings(circeDependency)
-  .dependsOn(shared)
+  .dependsOn(core)
 
-lazy val sharedScalacheck = project
-  .in(file("shared/scalacheck"))
-  .settings(settingsHelper.settingsForSubprojectCalled("shared-scalacheck"))
+lazy val coreScalacheck = project
+  .in(file("core/scalacheck"))
+  .settings(settingsHelper.settingsForSubprojectCalled("core-scalacheck"))
   .settings(scalacheckDependency)
-  .dependsOn(shared)
+  .dependsOn(core)
 
-lazy val sharedCats = project
-  .in(file("shared/cats"))
-  .settings(settingsHelper.settingsForSubprojectCalled("shared-cats"))
+lazy val coreCats = project
+  .in(file("core/cats"))
+  .settings(settingsHelper.settingsForSubprojectCalled("core-cats"))
   .settings(
     catsDependency,
     catsTestKitDependency,
     libraryDependencies += "au.id.tmm.intime" %% "intime-scalacheck" % "1.0.2" % "test",
     libraryDependencies += "au.id.tmm.intime" %% "intime-cats"       % "1.0.2" % "test",
   )
-  .dependsOn(shared, sharedScalacheck % "test->compile")
+  .dependsOn(core, coreScalacheck % "test->compile")
 
-lazy val distribution = project
-  .in(file("distribution/core"))
-  .settings(settingsHelper.settingsForSubprojectCalled("distribution"))
-  .dependsOn(shared)
-
-lazy val distributionCats = project
-  .in(file("distribution/cats"))
-  .settings(settingsHelper.settingsForSubprojectCalled("distribution-cats"))
-  .settings(
-    catsDependency,
-    catsTestKitDependency,
-    libraryDependencies += "au.id.tmm.intime" %% "intime-scalacheck" % "1.0.2" % "test",
-    libraryDependencies += "au.id.tmm.intime" %% "intime-cats"       % "1.0.2" % "test",
-  )
-  .dependsOn(distribution)
-
-lazy val distributionApacheMath = project
-  .in(file("distribution/apache-math"))
-  .settings(settingsHelper.settingsForSubprojectCalled("distribution-apache-math"))
+lazy val coreApacheMath = project
+  .in(file("core/apache-math"))
+  .settings(settingsHelper.settingsForSubprojectCalled("core-apache-math"))
   .settings(
     libraryDependencies += "org.apache.commons" % "commons-math3" % "3.6.1",
   )
-  .dependsOn(distribution)
+  .dependsOn(core)
 
-lazy val measure = project
-  .in(file("measure/core"))
-  .settings(settingsHelper.settingsForSubprojectCalled("measure"))
+lazy val coreTesting = project
+  .in(file("core/testing"))
+  .settings(settingsHelper.settingsForSubprojectCalled("core-testing"))
+  .settings(libraryDependencies += scalatestDependency)
+  .dependsOn(core, coreApacheMath, core % "test->test")
+
+lazy val exhaustiveDistribution = project
+  .in(file("distribution-exhaustive/core"))
+  .settings(settingsHelper.settingsForSubprojectCalled("distribution-exhaustive"))
   .settings(spireDependency)
-  .dependsOn(shared, shared % "test->test")
+  .dependsOn(core, core % "test->test")
 
-lazy val measureCirce = project
-  .in(file("measure/circe"))
-  .settings(settingsHelper.settingsForSubprojectCalled("measure-circe"))
+lazy val exhaustiveDistributionCirce = project
+  .in(file("distribution-exhaustive/circe"))
+  .settings(settingsHelper.settingsForSubprojectCalled("distribution-exhaustive-circe"))
   .settings(circeDependency)
-  .dependsOn(measure)
+  .dependsOn(exhaustiveDistribution)
 
-lazy val measureScalacheck = project
-  .in(file("measure/scalacheck"))
-  .settings(settingsHelper.settingsForSubprojectCalled("measure-scalacheck"))
+lazy val exhaustiveDistributionScalacheck = project
+  .in(file("distribution-exhaustive/scalacheck"))
+  .settings(settingsHelper.settingsForSubprojectCalled("distribution-exhaustive-scalacheck"))
   .settings(scalacheckDependency)
-  .dependsOn(measure)
+  .dependsOn(exhaustiveDistribution)
 
-lazy val measureCats = project
-  .in(file("measure/cats"))
-  .settings(settingsHelper.settingsForSubprojectCalled("measure-cats"))
+lazy val exhaustiveDistributionCats = project
+  .in(file("distribution-exhaustive/cats"))
+  .settings(settingsHelper.settingsForSubprojectCalled("distribution-exhaustive-cats"))
   .settings(
     catsDependency,
     catsTestKitDependency,
     libraryDependencies += "au.id.tmm.intime" %% "intime-scalacheck" % "1.0.2" % "test",
     libraryDependencies += "au.id.tmm.intime" %% "intime-cats"       % "1.0.2" % "test",
   )
-  .dependsOn(measure, sharedCats, measureScalacheck % "test->compile")
+  .dependsOn(exhaustiveDistribution, coreCats, exhaustiveDistributionScalacheck % "test->compile")
 
 addCommandAlias("check", ";+test;scalafmtCheckAll")
 addCommandAlias("cover", ";clean;coverage;test;coverageAggregate")
