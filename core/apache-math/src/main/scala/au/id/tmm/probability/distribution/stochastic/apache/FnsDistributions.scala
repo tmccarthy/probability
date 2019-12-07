@@ -13,20 +13,20 @@ trait FnsDistributions { this: FnsApacheToProbabilityDistribution =>
     mean: Double = 0d,
     stdDeviation: StrictlyPositive[Double] = StrictlyPositive.unsafe(1d),
   ): ProbabilityDistribution[Double] =
-      from(new NormalDistribution(mean, stdDeviation.n))
+    from(new NormalDistribution(mean, stdDeviation.n))
 
   def multivariateNormal(
     means: ArraySeq[Double],
     covariances: ArrayMatrix,
-  ): ProbabilityDistribution[ArraySeq[Double]] = {
-    from(new MultivariateNormalDistribution(
-      means match {
-        case double: ArraySeq.ofDouble => double.unsafeArray
-        case _ => means.toArray[Double]
-      },
-      covariances.unsafeArray,
-    ))
-  }
+  ): ProbabilityDistribution[ArraySeq[Double]] =
+    from(
+      new MultivariateNormalDistribution(
+        means match {
+          case double: ArraySeq.ofDouble => double.unsafeArray
+          case _                         => means.toArray[Double]
+        },
+        covariances.unsafeArray,
+      ))
 
   def uniform(lower: Double, upper: Double): Either[NumberIsTooLargeException, ProbabilityDistribution[Double]] =
     try {

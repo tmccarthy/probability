@@ -2,12 +2,16 @@ package au.id.tmm.probability.distribution.stochastic.apache
 
 import scala.collection.immutable.ArraySeq
 
-final class ArrayMatrix private (val unsafeArray: Array[Array[Double]], width: Int, height: Int)
+final class ArrayMatrix private (
+  val unsafeArray: Array[Array[Double]],
+  width: Int,
+  height: Int,
+)
 
 object ArrayMatrix {
 
   def apply(iterable: Iterable[Iterable[Double]]): Either[RowLengthMismatchError, ArrayMatrix] = {
-    val width = iterable.size
+    val width  = iterable.size
     val height = iterable.headOption.map(_.size).getOrElse(0)
 
     val unsafeArray = new Array[Array[Double]](height)
@@ -29,7 +33,7 @@ object ArrayMatrix {
 
   def unsafe(rows: Iterable[Double]*): ArrayMatrix = apply(rows) match {
     case Right(matrix) => matrix
-    case Left(e) => throw e
+    case Left(e)       => throw e
   }
 
   def unsafeWrapArray(array: Array[Array[Double]]): ArrayMatrix =
@@ -46,7 +50,11 @@ object ArrayMatrix {
     new ArrayMatrix(rows, diagonals.size, diagonals.size)
   }
 
-  final case class RowLengthMismatchError(expectedWidth: Int, actualWidth: Int, m: Int) extends Exception {
+  final case class RowLengthMismatchError(
+    expectedWidth: Int,
+    actualWidth: Int,
+    m: Int,
+  ) extends Exception {
     override def toString: String = scala.runtime.ScalaRunTime._toString(this)
   }
 
