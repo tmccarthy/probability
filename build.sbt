@@ -19,8 +19,8 @@ lazy val root = project
     coreTesting,
     exhaustiveDistribution,
     exhaustiveDistributionCirce,
-    exhaustiveDistributionCats,
     exhaustiveDistributionScalacheck,
+    exhaustiveDistributionCats,
   )
 
 lazy val core = project
