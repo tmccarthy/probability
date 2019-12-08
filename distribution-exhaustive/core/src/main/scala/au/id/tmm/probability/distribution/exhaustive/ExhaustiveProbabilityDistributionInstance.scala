@@ -43,6 +43,12 @@ private[exhaustive] object ExhaustiveProbabilityDistributionInstance
   override def map[A, B](aDistribution: ProbabilityDistribution[A])(f: A => B): ProbabilityDistribution[B] =
     aDistribution.map(f)
 
+  override def product[A, B](
+    aDistribution: ProbabilityDistribution[A],
+    bDistribution: ProbabilityDistribution[B],
+  ): ProbabilityDistribution[(A, B)] =
+    aDistribution * bDistribution
+
   // TODO this needs test coverage
   override def fromWeights[A, N : Numeric](weightsPerElement: Seq[(A, N)]): Option[ProbabilityDistribution[A]] = {
     if (weightsPerElement.isEmpty) return None

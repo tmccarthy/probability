@@ -23,6 +23,12 @@ private[stochastic] object StochasticProbabilityDistributionInstance
   override def map[A, B](aDistribution: ProbabilityDistribution[A])(f: A => B): ProbabilityDistribution[B] =
     aDistribution.map(f)
 
+  override def product[A, B](
+    aDistribution: ProbabilityDistribution[A],
+    bDistribution: ProbabilityDistribution[B],
+  ): ProbabilityDistribution[(A, B)] =
+    aDistribution * bDistribution
+
   override def fromWeights[A, N : Numeric](weightsPerElement: Seq[(A, N)]): Option[ProbabilityDistribution[A]] =
     ProbabilityDistribution.fromWeights(weightsPerElement)
 

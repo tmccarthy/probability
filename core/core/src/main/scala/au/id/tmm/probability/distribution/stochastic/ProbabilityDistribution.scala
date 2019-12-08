@@ -35,6 +35,14 @@ final class ProbabilityDistribution[+A] private (private val sample: () => A) {
 
   def filterNot(predicate: A => Boolean): ProbabilityDistribution[A] = filter(a => !predicate(a))
 
+  def productWith[B](that: ProbabilityDistribution[B]): ProbabilityDistribution[(A, B)] =
+    for {
+      a <- this
+      b <- that
+    } yield (a, b)
+
+  def *[B](that: ProbabilityDistribution[B]): ProbabilityDistribution[(A, B)] = productWith(that)
+
 }
 
 object ProbabilityDistribution

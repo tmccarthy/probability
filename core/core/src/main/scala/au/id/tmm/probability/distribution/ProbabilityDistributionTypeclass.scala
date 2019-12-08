@@ -10,6 +10,8 @@ trait ProbabilityDistributionTypeclass[Distribution[_]] {
 
   def map[A, B](aDistribution: Distribution[A])(f: A => B): Distribution[B]
 
+  def product[A, B](aDistribution: Distribution[A], bDistribution: Distribution[B]): Distribution[(A, B)]
+
   def fromWeights[A, N : Numeric](weightsPerElement: Seq[(A, N)]): Option[Distribution[A]]
 
   def headTailWeights[A, N : Numeric](firstWeight: (A, N), otherWeights: Seq[(A, N)]): Distribution[A]

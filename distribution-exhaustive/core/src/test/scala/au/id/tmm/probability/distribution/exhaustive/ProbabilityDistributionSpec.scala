@@ -47,6 +47,20 @@ class ProbabilityDistributionSpec extends FlatSpec {
     )
   }
 
+  it can "be combined with another probability distribution with a single outcome" in {
+    assert((Always("hello") * Always("world")) === Always(("hello", "world")))
+  }
+
+  it can "be combined with another probability distribution with a varied outcome" in {
+    val product = Always("hello") * makeVaried("hello" -> Rational(1, 3), "world" -> Rational(2, 3))
+
+    assert(
+      product === makeVaried(
+        ("hello", "hello") -> Rational(1, 3),
+        ("hello", "world") -> Rational(2, 3),
+      ))
+  }
+
   it should "be equal to another probability distribution with the same single outcome" in {
     assert(Always("hello") === Always("hello"))
   }
@@ -173,6 +187,32 @@ class ProbabilityDistributionSpec extends FlatSpec {
     val expectedAfterMap = Always(5)
 
     assert(varied.flatMap(mappingFunction) === expectedAfterMap)
+  }
+
+  it can "be combined with another probability distribution with a single outcome" in {
+    val varied = makeVaried("hello" -> Rational(1, 3), "world" -> Rational(2, 3))
+
+    assert(
+      varied.productWith(Always("hello")) === makeVaried(
+        ("hello", "hello") -> Rational(1, 3),
+        ("world", "hello") -> Rational(2, 3),
+      ))
+  }
+
+  it can "be combined with another probability distribution with a varied outcome" in {
+    val varied1 = makeVaried("a" -> Rational(1, 3), "b" -> Rational(2, 3))
+    val varied2 = makeVaried("c" -> Rational(1, 4), "d" -> Rational(3, 4))
+
+    val product = varied1 * varied2
+
+    val expectedProduct = makeVaried(
+      ("a", "c") -> Rational(1, 3) * Rational(1, 4),
+      ("a", "d") -> Rational(1, 3) * Rational(3, 4),
+      ("b", "c") -> Rational(2, 3) * Rational(1, 4),
+      ("b", "d") -> Rational(2, 3) * Rational(3, 4),
+    )
+
+    assert(product === expectedProduct)
   }
 
   it should "return an outcome as any outcome" in {

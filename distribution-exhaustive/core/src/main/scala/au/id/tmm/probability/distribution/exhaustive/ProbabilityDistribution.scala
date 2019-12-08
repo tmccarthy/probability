@@ -17,6 +17,10 @@ sealed trait ProbabilityDistribution[A] {
 
   def flatMap[U](f: A => ProbabilityDistribution[U]): ProbabilityDistribution[U]
 
+  def productWith[B](that: ProbabilityDistribution[B]): ProbabilityDistribution[(A, B)]
+
+  def *[B](that: ProbabilityDistribution[B]): ProbabilityDistribution[(A, B)] = productWith(that)
+
   def anyOutcome: A
 
   def onlyOutcome: Option[A]
@@ -156,6 +160,11 @@ object ProbabilityDistribution {
 
     override def flatMap[U](f: A => ProbabilityDistribution[U]): ProbabilityDistribution[U] = f(outcome)
 
+    override def productWith[B](that: ProbabilityDistribution[B]): ProbabilityDistribution[(A, B)] = that match {
+      case Always(thatOutcome) => Always((this.outcome, thatOutcome))
+      case varied: Varied[B]   => varied.map(b => (outcome, b))
+    }
+
     override def anyOutcome: A = outcome
 
     override def onlyOutcome: Some[A] = Some(outcome)
@@ -199,6 +208,15 @@ object ProbabilityDistribution {
       }
 
       builder.result().getOrElse(throw new AssertionError)
+    }
+
+    override def productWith[B](that: ProbabilityDistribution[B]): ProbabilityDistribution[(A, B)] = that match {
+      case Always(thatOutcome) => this.map(a => (a, thatOutcome))
+      case varied: Varied[B] =>
+        for {
+          a <- this
+          b <- that
+        } yield (a, b)
     }
 
     override def anyOutcome: A = asMap.keys.head
