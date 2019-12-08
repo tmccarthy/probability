@@ -88,6 +88,10 @@ abstract class ProbabilitySpec[P](
     assert(probabilityInstance.divideScalar(one, 5L) === makeUnsafe(1, 5))
   }
 
+  "negating a probability" should "succeed" in {
+    assert(probabilityInstance.negate(makeUnsafe(1, 3)) === makeUnsafe(2, 3))
+  }
+
   "validating a probability" should "succeed if it is valid" in {
     assert(probabilityInstance.validate(makeUnsafe(1, 2)) === Right(makeUnsafe(1, 2)))
   }

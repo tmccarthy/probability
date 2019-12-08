@@ -33,6 +33,9 @@ final case class RationalProbability private (asRational: Rational) extends AnyV
   def /(divisor: Long): RationalProbability =
     RationalProbability.makeUnsafe(this.asRational / divisor)
 
+  def negate: RationalProbability =
+    RationalProbability.makeUnsafe(1 - this.asRational)
+
   def validate: Either[Probability.Exception.Invalid[RationalProbability], RationalProbability] =
     if (asRational >= Rational.zero && asRational <= Rational.one) {
       Right(this)
@@ -87,6 +90,8 @@ object RationalProbability {
     override def multiply(lhs: RationalProbability, rhs: RationalProbability): RationalProbability = lhs * rhs
 
     override def divideScalar(p: RationalProbability, scalar: Long): RationalProbability = p / scalar
+
+    override def negate(p: RationalProbability): RationalProbability = p.negate
 
     override def makeUnsafe(numerator: Long, denominator: Long): RationalProbability =
       RationalProbability.makeUnsafe(numerator, denominator)

@@ -31,6 +31,9 @@ final case class DoubleProbability(asDouble: Double) extends AnyVal {
   def /(divisor: Long): DoubleProbability =
     DoubleProbability.makeUnsafe(this.asDouble / divisor)
 
+  def negate: DoubleProbability =
+    DoubleProbability.makeUnsafe(1 - this.asDouble)
+
   def validate: Either[Probability.Exception.Invalid[DoubleProbability], DoubleProbability] =
     if (asDouble >= 0 && asDouble <= 1) {
       Right(this)
@@ -92,6 +95,9 @@ object DoubleProbability {
     override def multiply(lhs: DoubleProbability, rhs: DoubleProbability): DoubleProbability = lhs * rhs
 
     override def divideScalar(p: DoubleProbability, scalar: Long): DoubleProbability = p / scalar
+
+    override def negate(p: DoubleProbability): DoubleProbability =
+      p.negate
 
     override def makeUnsafe(numerator: Long, denominator: Long): DoubleProbability =
       DoubleProbability.makeUnsafe(numerator, denominator)

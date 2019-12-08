@@ -16,6 +16,8 @@ trait Probability[P] {
 
   def divideScalar(p: P, scalar: Long): P
 
+  def negate(p: P): P
+
   def makeUnsafe(numerator: Long, denominator: Long): P
 
   def toDouble(p: P): Double
