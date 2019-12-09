@@ -1,9 +1,9 @@
 # Probability
 
 [![CircleCI](https://circleci.com/gh/tmccarthy/probability.svg?style=svg)](https://circleci.com/gh/tmccarthy/probability)
-[![Maven Central](https://img.shields.io/maven-central/v/au.id.tmm.probability/probability-shared_2.13.svg)](https://repo.maven.apache.org/maven2/au/id/tmm/probability/probability-shared_2.13/)
+[![Maven Central](https://img.shields.io/maven-central/v/au.id.tmm.probability/probability-core_2.13.svg)](https://repo.maven.apache.org/maven2/au/id/tmm/probability/probability-core_2.13/)
 
-A set of Scala classes for representing probabilities, probability distributions and probability measures in Scala, 
+A set of Scala classes for representing probabilities, probability distributions and probability measures in Scala,
 along with instances for [Cats](https://github.com/typelevel/cats) and [Circe](https://github.com/circe/circe).
 
 ```scala
@@ -17,8 +17,8 @@ libraryDependencies += "au.id.tmm.probability" %% "probability-distribution-core
 
 ## `ProbabilityMeasure`
 
-A `ProbabilityMeasure[A]` is a data structure that describes the probability of some set of values 
-of type `A`, with the requirement that the probabilities must sum to 1. `ProbabilityMeasure` 
+A `ProbabilityMeasure[A]` is a data structure that describes the probability of some set of values
+of type `A`, with the requirement that the probabilities must sum to 1. `ProbabilityMeasure`
 instances can be chained together using `flatMap`. This allows us to compute the probability of some
 set of final outcomes given the probability of their constituent parts.
 
@@ -61,26 +61,26 @@ val probabilitiesWithLoadedDice =
 
 Note that we use the [`spire.math.Rational`](https://typelevel.org/spire/api/spire/math/Rational.html)
 class from the [Spire](https://github.com/typelevel/spire) library to ensure that we always compute
-the exact probability, without any floating-point errors. 
+the exact probability, without any floating-point errors.
 
 ### Why is this useful?
 
-These classes were originally part of [`countstv`](https://github.com/tmccarthy/countstv), which 
+These classes were originally part of [`countstv`](https://github.com/tmccarthy/countstv), which
 performs election counts according to the [single transferable vote](https://en.wikipedia.org/wiki/Single_transferable_vote)
-(STV) algorithm. In an STV election count, ballots are allocated according to voters' preferences. 
+(STV) algorithm. In an STV election count, ballots are allocated according to voters' preferences.
 As candidates are marked as "elected" or "excluded", ballots are allocated to the next preferences
 as expressed by the voters. If there is ever a tie, a coin toss is used to determine who is elected
 or excluded first.
 
 In cases where a coin toss decides the order in which candidates are elected or excluded, the rest
-of the election count looks entirely different in either case. However, the vast majority of the 
-time this makes no difference to who is finally elected. `ProbabilityMeasure` makes it easy to 
+of the election count looks entirely different in either case. However, the vast majority of the
+time this makes no difference to who is finally elected. `ProbabilityMeasure` makes it easy to
 run the election count for both of the coin toss outcomes, keeping track of the differences while
 also easily identifying that the result is the same.
 
 ### Cats and Circe instances
 
-`ProbabilityMeasure` is a monad, and the `probability-measure-cats` dependency provides the 
+`ProbabilityMeasure` is a monad, and the `probability-measure-cats` dependency provides the
 appropriate Cats typeclasses.
 
-The `probability-measure-circe` project provides encoders and decoders for Circe.  
+The `probability-measure-circe` project provides encoders and decoders for Circe.
