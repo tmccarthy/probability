@@ -136,7 +136,7 @@ object ProbabilityDistribution extends ProbabilityDistributionTypeclass.Companio
     apply(asMap.toSeq: _*)
 
   def apply[A](branches: (A, RationalProbability)*): Either[ConstructionError, ProbabilityDistribution[A]] = {
-    val builder = new ProbabilityDistributionBuilder[A]
+    val builder = new Builder[A]
 
     builder.sizeHint(branches.size)
 
@@ -145,7 +145,9 @@ object ProbabilityDistribution extends ProbabilityDistributionTypeclass.Companio
     builder.result()
   }
 
-  private[exhaustive] final class ProbabilityDistributionBuilder[A] {
+  def builder[A]: Builder[A] = new Builder[A]
+
+  final class Builder[A] private[exhaustive] () {
     private val underlying: mutable.Map[A, RationalProbability] = mutable.Map.empty
 
     private var runningTotalProbability: RationalProbability                  = RationalProbability.zero
@@ -192,7 +194,7 @@ object ProbabilityDistribution extends ProbabilityDistributionTypeclass.Companio
         return Left(ConstructionError.NoPossibilitiesProvided)
       }
       if (runningTotalProbability != RationalProbability.one) {
-        return Left(ConstructionError.ProbabilitiesDontSumToOne)
+        return Left(ConstructionError.ProbabilitiesDontSumToOne(runningTotalProbability))
       }
 
       underlying.size match {
@@ -238,7 +240,7 @@ object ProbabilityDistribution extends ProbabilityDistributionTypeclass.Companio
     override def chanceOf(outcome: A): RationalProbability = asMap.getOrElse(outcome, RationalProbability.zero)
 
     override def map[U](f: A => U): ProbabilityDistribution[U] = {
-      val builder = new ProbabilityDistributionBuilder[U]
+      val builder = new Builder[U]
 
       builder.sizeHint(asMap.size)
 
@@ -248,7 +250,7 @@ object ProbabilityDistribution extends ProbabilityDistributionTypeclass.Companio
     }
 
     override def flatMap[U](f: A => ProbabilityDistribution[U]): ProbabilityDistribution[U] = {
-      val builder = new ProbabilityDistributionBuilder[U]
+      val builder = new Builder[U]
 
       builder.sizeHint(asMap.size)
 
@@ -287,7 +289,7 @@ object ProbabilityDistribution extends ProbabilityDistributionTypeclass.Companio
   object ConstructionError {
     case object NoPossibilitiesProvided extends ConstructionError
 
-    case object ProbabilitiesDontSumToOne extends ConstructionError
+    final case class ProbabilitiesDontSumToOne(actualSum: RationalProbability) extends ConstructionError
 
     final case class InvalidProbabilityForKey[A](key: A, cause: Probability.Exception.Invalid[RationalProbability])
         extends ConstructionError {

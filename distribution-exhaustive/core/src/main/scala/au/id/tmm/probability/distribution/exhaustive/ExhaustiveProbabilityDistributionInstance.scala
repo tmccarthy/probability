@@ -1,7 +1,7 @@
 package au.id.tmm.probability.distribution.exhaustive
 
 import au.id.tmm.probability.distribution.ProbabilityDistributionTypeclass
-import au.id.tmm.probability.distribution.exhaustive.ProbabilityDistribution.ProbabilityDistributionBuilder
+import au.id.tmm.probability.distribution.exhaustive.ProbabilityDistribution.Builder
 import au.id.tmm.probability.rational.RationalProbability
 import com.github.ghik.silencer.silent
 
@@ -14,7 +14,7 @@ private[exhaustive] object ExhaustiveProbabilityDistributionInstance
   //noinspection ScalaDeprecation
   @silent("deprecated")
   override def tailRecM[A, B](a: A)(f: A => ProbabilityDistribution[Either[A, B]]): ProbabilityDistribution[B] = {
-    val builder: ProbabilityDistributionBuilder[B] = new ProbabilityDistributionBuilder[B]
+    val builder: Builder[B] = new Builder[B]
 
     val workingStack = mutable.Stack[(Either[A, B], RationalProbability)](f(a).asMap.toSeq: _*)
 
