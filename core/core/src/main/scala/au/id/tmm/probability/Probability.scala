@@ -69,7 +69,7 @@ trait Probability[P] {
     override def fromInt(x: Int): P = x match {
       case 0 => Probability.this.zero
       case 1 => Probability.this.one
-      case _ => throw Probability.Exception.Invalid(makeUnsafe(x, 1))
+      case _ => throw Probability.Exception.Invalid(makeUnsafe(x.toLong, 1))
     }
 
     override def parseString(str: String): Option[P] = Probability.this.parse(str)

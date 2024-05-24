@@ -57,7 +57,7 @@ object ProbabilityDistribution extends ProbabilityDistributionTypeclass.Companio
       case 0 => Always(possibilitiesHead)
       case numOtherPossibilities => {
         val numPossibilities          = numOtherPossibilities + 1
-        val probabilityPerPossibility = RationalProbability.makeUnsafe(1, numPossibilities)
+        val probabilityPerPossibility = RationalProbability.makeUnsafe(1L, numPossibilities.toLong)
 
         val underlyingMapBuilder = Map.newBuilder[A, RationalProbability]
 
@@ -99,13 +99,13 @@ object ProbabilityDistribution extends ProbabilityDistributionTypeclass.Companio
     if (weightsPerElement.size == 1) return Some(ProbabilityDistribution.Always(weightsPerElement.head._1))
 
     val totalWeight = weightsPerElement.foldLeft(Numeric[N].zero) {
-      case (acc, (a, weight)) => Numeric[N].plus(acc, weight)
+      case (acc, (_, weight)) => Numeric[N].plus(acc, weight)
     }
 
     val rationalProbabilitiesPerOutcome: Seq[(A, RationalProbability)] = totalWeight match {
       case totalWeight: Int =>
         weightsPerElement.map {
-          case (a, weight) => a -> RationalProbability.makeUnsafe(Rational(weight.asInstanceOf[Int], totalWeight))
+          case (a, weight) => a -> RationalProbability.makeUnsafe(Rational(weight.asInstanceOf[Int].toLong, totalWeight.toLong))
         }
       case totalWeight: Long =>
         weightsPerElement.map {
@@ -169,7 +169,7 @@ object ProbabilityDistribution extends ProbabilityDistributionTypeclass.Companio
       }
 
       probability.validate match {
-        case Right(valid) => ()
+        case Right(_) => ()
         case Left(invalid) => {
           badKey = Some(ConstructionError.InvalidProbabilityForKey(possibility, invalid))
           return this
@@ -266,7 +266,7 @@ object ProbabilityDistribution extends ProbabilityDistributionTypeclass.Companio
 
     override def productWith[B](that: ProbabilityDistribution[B]): ProbabilityDistribution[(A, B)] = that match {
       case Always(thatOutcome) => this.map(a => (a, thatOutcome))
-      case varied: Varied[B] =>
+      case _: Varied[B] =>
         for {
           a <- this
           b <- that

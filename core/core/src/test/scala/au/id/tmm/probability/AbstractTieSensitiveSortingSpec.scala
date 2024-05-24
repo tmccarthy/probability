@@ -2,13 +2,15 @@ package au.id.tmm.probability
 
 import au.id.tmm.probability.distribution.ProbabilityDistributionTypeclass
 import org.scalactic.Equality
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
+import scala.annotation.nowarn
 import scala.collection.immutable.ArraySeq
 
-abstract class AbstractTieSensitiveSortingSpec[Distribution[_] : ProbabilityDistributionTypeclass] extends FlatSpec {
+abstract class AbstractTieSensitiveSortingSpec[Distribution[_] : ProbabilityDistributionTypeclass] extends AnyFlatSpec {
 
   protected implicit def equalityFor[A]: Equality[Distribution[A]]
+  @nowarn
   private implicit def optionEquality[A]: Equality[Option[Distribution[A]]] = {
     case (left: Some[Distribution[A]], right: Some[Distribution[A]]) => equalityFor[A].areEqual(left.get, right.get)
     case (None, None)                                                => true

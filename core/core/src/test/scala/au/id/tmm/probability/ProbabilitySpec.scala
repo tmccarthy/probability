@@ -2,13 +2,13 @@ package au.id.tmm.probability
 
 import au.id.tmm.probability.Probability.Exception
 import org.scalactic.Equality
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
 abstract class ProbabilitySpec[P](
   implicit
   probabilityInstance: Probability[P],
   equality: Equality[P],
-) extends FlatSpec {
+) extends AnyFlatSpec {
 
   implicit val arithmeticCausedInvalidEquality: Equality[Probability.Exception.ArithmeticCausedInvalid[P]] = {
     (left: Probability.Exception.ArithmeticCausedInvalid[P], right: Any) =>
@@ -17,6 +17,7 @@ abstract class ProbabilitySpec[P](
           equality.areEquivalent(left.lhs, right.lhs) &&
             equality.areEquivalent(left.rhs, right.rhs) &&
             equality.areEquivalent(left.cause.invalid, right.cause.invalid)
+        case _ => throw new AssertionError()
       }
   }
 

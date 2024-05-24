@@ -1,8 +1,9 @@
 package au.id.tmm.probability
 
-import com.github.ghik.silencer.silent
 import org.scalacheck.Gen.Choose
 import org.scalacheck.{Arbitrary, Cogen, Gen, Shrink}
+
+import scala.annotation.nowarn
 
 package object scalacheck {
 
@@ -17,7 +18,7 @@ package object scalacheck {
 
   implicit val doubleProbabilityShrink: Shrink[DoubleProbability] = Shrink(doShrink)
 
-  @silent("deprecated")
+  @nowarn
   private def doShrink(p: DoubleProbability): Stream[DoubleProbability] = p match {
     case DoubleProbability.zero => Stream.empty
     case p if Ordering[DoubleProbability].lt(p, DoubleProbability.makeUnsafe(1, 100000)) =>

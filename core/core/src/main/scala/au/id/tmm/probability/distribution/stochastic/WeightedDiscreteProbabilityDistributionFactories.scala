@@ -12,7 +12,7 @@ trait WeightedDiscreteProbabilityDistributionFactories { this: QuantileBasedDisc
     if (weightsPerElement.size == 1) return Some(ProbabilityDistribution.always(weightsPerElement.head._1))
 
     val totalWeight: Double = weightsPerElement.foldLeft(0d) {
-      case (acc, (a, weight)) => acc + Numeric[N].toDouble(weight)
+      case (acc, (_, weight)) => acc + Numeric[N].toDouble(weight)
     }
 
     val thresholds: ArrayBuffer[(A, DoubleProbability)] = mutable.ArrayBuffer[(A, DoubleProbability)]()

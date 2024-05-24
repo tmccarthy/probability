@@ -3,10 +3,10 @@ package au.id.tmm.probability.distribution.exhaustive
 import au.id.tmm.probability.Probability
 import au.id.tmm.probability.distribution.exhaustive.ProbabilityDistribution.{Always, ConstructionError, Varied}
 import au.id.tmm.probability.rational.RationalProbability
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 import spire.math.Rational
 
-class ProbabilityDistributionSpec extends FlatSpec {
+class ProbabilityDistributionSpec extends AnyFlatSpec {
 
   private def makeVaried[A](possibilities: (A, Rational)*): Varied[A] = {
     val possibilitiesWithProbabilities = possibilities.map {

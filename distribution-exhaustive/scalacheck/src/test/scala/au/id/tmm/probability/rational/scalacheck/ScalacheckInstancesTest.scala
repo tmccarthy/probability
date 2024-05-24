@@ -1,10 +1,10 @@
 package au.id.tmm.probability.rational.scalacheck
 
 import au.id.tmm.probability.rational.RationalProbability
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 
-class ScalacheckInstancesTest extends FlatSpec with ScalaCheckDrivenPropertyChecks {
+class ScalacheckInstancesTest extends AnyFlatSpec with ScalaCheckDrivenPropertyChecks {
 
   "the rational probability choose" should "choose values between a min and a max" in
     forAll { (left: RationalProbability, right: RationalProbability) =>

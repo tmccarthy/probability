@@ -2,9 +2,9 @@ package au.id.tmm.probability.distribution.stochastic
 
 import au.id.tmm.probability.DoubleProbability
 import org.scalactic.Equality
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
-class ProbabilityDistributionSpec extends FlatSpec {
+class ProbabilityDistributionSpec extends AnyFlatSpec {
 
   private def assertLooksLike[A](
     probabilityDistribution: ProbabilityDistribution[A],

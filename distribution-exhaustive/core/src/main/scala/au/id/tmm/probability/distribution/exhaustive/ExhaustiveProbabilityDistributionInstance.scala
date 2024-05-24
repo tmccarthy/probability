@@ -3,8 +3,8 @@ package au.id.tmm.probability.distribution.exhaustive
 import au.id.tmm.probability.distribution.ProbabilityDistributionTypeclass
 import au.id.tmm.probability.distribution.exhaustive.ProbabilityDistribution.Builder
 import au.id.tmm.probability.rational.RationalProbability
-import com.github.ghik.silencer.silent
 
+import scala.annotation.nowarn
 import scala.collection.mutable
 
 private[exhaustive] object ExhaustiveProbabilityDistributionInstance
@@ -12,7 +12,7 @@ private[exhaustive] object ExhaustiveProbabilityDistributionInstance
   override def always[A](a: A): ProbabilityDistribution[A] = ProbabilityDistribution.Always(a)
 
   //noinspection ScalaDeprecation
-  @silent("deprecated")
+  @nowarn
   override def tailRecM[A, B](a: A)(f: A => ProbabilityDistribution[Either[A, B]]): ProbabilityDistribution[B] = {
     val builder: Builder[B] = new Builder[B]
 

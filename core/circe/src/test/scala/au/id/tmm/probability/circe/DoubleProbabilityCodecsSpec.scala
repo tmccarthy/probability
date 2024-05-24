@@ -3,9 +3,9 @@ package au.id.tmm.probability.circe
 import au.id.tmm.probability.DoubleProbability
 import io.circe.Json
 import io.circe.syntax.EncoderOps
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
-class DoubleProbabilityCodecsSpec extends FlatSpec {
+class DoubleProbabilityCodecsSpec extends AnyFlatSpec {
 
   "the double probablity encoder" should "encode a double probability" in {
     assert(DoubleProbability.makeUnsafe(0.120d).asJson === Json.fromDoubleOrNull(0.120d))

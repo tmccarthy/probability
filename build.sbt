@@ -158,6 +158,7 @@ lazy val exhaustiveDistributionScalacheck = project
   .settings(
     libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-testing-core" % tmmUtilsVersion  % Test,
     libraryDependencies += "org.scalatest"       %% "scalatest"              % scalatestVersion % Test,
+    libraryDependencies += "org.scalatestplus" %% "scalacheck-1-17" % "3.2.18.0" % Test,
   )
   .dependsOn(exhaustiveDistribution)
 

@@ -1,10 +1,10 @@
 package au.id.tmm.probability.syntax
 
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
 import scala.collection.immutable.ArraySeq
 
-class SyntaxSpec extends FlatSpec {
+class SyntaxSpec extends AnyFlatSpec {
 
   "the frequency syntax" should "count the frequency in an array" in {
     val iterable = ArraySeq(

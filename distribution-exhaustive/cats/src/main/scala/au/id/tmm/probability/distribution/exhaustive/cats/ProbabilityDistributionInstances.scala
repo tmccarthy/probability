@@ -8,10 +8,10 @@ trait ProbabilityDistributionInstances {
   implicit val catsKernelStdMonadForProbabilityDistribution: CommutativeMonad[ProbabilityDistribution] =
     probability.distribution.cats.catsKernelStdMonadForProbabilityDistribution
 
-  implicit def catsKernelStdHashForProbabilityDistribution[A : Hash]: Hash[ProbabilityDistribution[A]] =
+  implicit def catsKernelStdHashForProbabilityDistribution[A]: Hash[ProbabilityDistribution[A]] =
     new ProbabilityDistributionHash
 
-  implicit def catsKernelStdShowForProbabilityDistribution[A : Show]: Show[ProbabilityDistribution[A]] =
+  implicit def catsKernelStdShowForProbabilityDistribution[A]: Show[ProbabilityDistribution[A]] =
     new ProbabilityDistributionShow
 
   implicit def catsKernelStdSemigroupForProbabilityDistribution[A : Semigroup]: Semigroup[ProbabilityDistribution[A]] =

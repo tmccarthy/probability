@@ -1,15 +1,17 @@
 package au.id.tmm.probability.distribution.stochastic.apache
 
+import scala.annotation.nowarn
 import scala.collection.immutable.ArraySeq
 
 final class ArrayMatrix private (
   val unsafeArray: Array[Array[Double]],
-  width: Int,
-  height: Int,
+  val width: Int,
+  val height: Int,
 )
 
 object ArrayMatrix {
 
+  @nowarn
   def apply(iterable: Iterable[Iterable[Double]]): Either[RowLengthMismatchError, ArrayMatrix] = {
     val width  = iterable.size
     val height = iterable.headOption.map(_.size).getOrElse(0)

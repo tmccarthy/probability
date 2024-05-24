@@ -1,15 +1,16 @@
 package au.id.tmm.probability.rational
 
-import com.github.ghik.silencer.silent
 import org.scalacheck.Gen.Choose
 import org.scalacheck.{Arbitrary, Cogen, Gen, Shrink}
 import spire.math.{Rational, SafeLong}
+
+import scala.annotation.nowarn
 
 package object scalacheck {
 
   implicit val shrinkRationalProbability: Shrink[RationalProbability] = Shrink(p => doShrink(p))
 
-  @silent("deprecated")
+  @nowarn
   private def doShrink(p: RationalProbability): Stream[RationalProbability] = p match {
     case RationalProbability.zero => Stream.empty
     case p if Ordering[RationalProbability].lt(p, RationalProbability.makeUnsafe(1, 100000)) =>
@@ -21,7 +22,7 @@ package object scalacheck {
     }
   }
 
-  private implicit val chooseSafeLong: Choose[SafeLong] = Choose.xmap(SafeLong.apply, _.longValue)
+  private implicit val chooseSafeLong: Choose[SafeLong] = Choose.xmap[Long, SafeLong](SafeLong.apply, _.longValue)
 
   implicit val chooseRationalProbability: Choose[RationalProbability] =
     (min, max) => {
