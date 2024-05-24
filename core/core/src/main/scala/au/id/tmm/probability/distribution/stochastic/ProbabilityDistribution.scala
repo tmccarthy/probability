@@ -1,5 +1,6 @@
 package au.id.tmm.probability.distribution.stochastic
 
+import au.id.tmm.probability.NonEmptyList
 import au.id.tmm.probability.distribution.ProbabilityDistributionTypeclass
 
 import scala.annotation.tailrec
@@ -46,14 +47,30 @@ final class ProbabilityDistribution[+A] private (private val sample: () => A) {
 }
 
 object ProbabilityDistribution
-    extends UniformProbabilityDistributionFactories
+  extends ProbabilityDistributionTypeclass.Companion[ProbabilityDistribution]
+    with UniformProbabilityDistributionFactories
     with QuantileBasedDiscreteProbabilityDistributionFactories
     with WeightedDiscreteProbabilityDistributionFactories {
 
   @inline def apply[A](sample: () => A): ProbabilityDistribution[A] =
     new ProbabilityDistribution[A](sample)
 
-  implicit val probabilityDistributionInstance: ProbabilityDistributionTypeclass[ProbabilityDistribution] =
+  override implicit val probabilityDistributionInstance: ProbabilityDistributionTypeclass[ProbabilityDistribution] =
     StochasticProbabilityDistributionInstance
+
+  override def always[A](a: A): ProbabilityDistribution[A] =
+    super[UniformProbabilityDistributionFactories].always(a)
+  override def headTailEvenly[A](head: A, tail: Iterable[A]): ProbabilityDistribution[A] =
+    super[UniformProbabilityDistributionFactories].headTailEvenly(head, tail)
+  override def fromWeights[A, N : Numeric](weightsPerElement: Seq[(A, N)]): Option[ProbabilityDistribution[A]] =
+    super[WeightedDiscreteProbabilityDistributionFactories].fromWeights(weightsPerElement)
+  override def headTailWeights[A, N : Numeric](firstWeight: (A, N), otherWeights: Seq[(A, N)]): ProbabilityDistribution[A] =
+    super[WeightedDiscreteProbabilityDistributionFactories].headTailWeights(firstWeight, otherWeights)
+  override def allElementsEvenly[A](possibilities: NonEmptyList[A]): ProbabilityDistribution[A] =
+    super[UniformProbabilityDistributionFactories].allElementsEvenly(possibilities)
+  override def allElementsEvenly[A](iterable: Iterable[A]): Option[ProbabilityDistribution[A]] =
+    super[UniformProbabilityDistributionFactories].allElementsEvenly(iterable)
+  override def evenly[A](head: A, tail: A*): ProbabilityDistribution[A] =
+    super[UniformProbabilityDistributionFactories].evenly(head, tail: _*)
 
 }

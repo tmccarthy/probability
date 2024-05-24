@@ -3,6 +3,7 @@ package au.id.tmm.probability.distribution.exhaustive
 import au.id.tmm.probability.distribution.ProbabilityDistributionTypeclass
 import au.id.tmm.probability.rational.RationalProbability
 import au.id.tmm.probability.{NonEmptyList, Probability}
+import spire.math.Rational
 
 import scala.collection.mutable
 import scala.runtime.ScalaRunTime
@@ -43,15 +44,15 @@ sealed trait ProbabilityDistribution[A] {
 
 }
 
-object ProbabilityDistribution {
+object ProbabilityDistribution extends ProbabilityDistributionTypeclass.Companion[ProbabilityDistribution] {
 
-  implicit val probabilityDistributionInstance: ProbabilityDistributionTypeclass[ProbabilityDistribution] =
+  override implicit val probabilityDistributionInstance: ProbabilityDistributionTypeclass[ProbabilityDistribution] =
     ExhaustiveProbabilityDistributionInstance
 
-  def evenly[A](firstPossibility: A, otherPossibilities: A*): ProbabilityDistribution[A] =
+  override def evenly[A](firstPossibility: A, otherPossibilities: A*): ProbabilityDistribution[A] =
     headTailEvenly(firstPossibility, otherPossibilities)
 
-  def headTailEvenly[A](possibilitiesHead: A, possibilitiesTail: Iterable[A]): ProbabilityDistribution[A] =
+  override def headTailEvenly[A](possibilitiesHead: A, possibilitiesTail: Iterable[A]): ProbabilityDistribution[A] =
     possibilitiesTail.size match {
       case 0 => Always(possibilitiesHead)
       case numOtherPossibilities => {
@@ -70,15 +71,66 @@ object ProbabilityDistribution {
       }
     }
 
-  def allElementsEvenly[A](possibilities: NonEmptyList[A]): ProbabilityDistribution[A] =
+  override def headTailWeights[A, N : Numeric](
+    firstWeight: (A, N),
+    otherWeights: Seq[(A, N)],
+  ): ProbabilityDistribution[A] = {
+    if (otherWeights.isEmpty) return ProbabilityDistribution.Always(firstWeight._1)
+
+    fromWeights(otherWeights.prepended(firstWeight)) match {
+      case Some(distribution) => distribution
+      case None               => throw new AssertionError()
+    }
+  }
+
+  override def allElementsEvenly[A](possibilities: NonEmptyList[A]): ProbabilityDistribution[A] =
     evenly[A](possibilities.head, possibilities.tail: _*)
 
-  def allElementsEvenly[A](possibilities: Iterable[A]): Option[ProbabilityDistribution[A]] =
+  override def allElementsEvenly[A](possibilities: Iterable[A]): Option[ProbabilityDistribution[A]] =
     if (possibilities.isEmpty) {
       None
     } else {
       Some(evenly[A](possibilities.head, possibilities.tail.toSeq: _*))
     }
+
+  // TODO this needs test coverage
+  override def fromWeights[A, N : Numeric](weightsPerElement: Seq[(A, N)]): Option[ProbabilityDistribution[A]] = {
+    if (weightsPerElement.isEmpty) return None
+    if (weightsPerElement.size == 1) return Some(ProbabilityDistribution.Always(weightsPerElement.head._1))
+
+    val totalWeight = weightsPerElement.foldLeft(Numeric[N].zero) {
+      case (acc, (a, weight)) => Numeric[N].plus(acc, weight)
+    }
+
+    val rationalProbabilitiesPerOutcome: Seq[(A, RationalProbability)] = totalWeight match {
+      case totalWeight: Int =>
+        weightsPerElement.map {
+          case (a, weight) => a -> RationalProbability.makeUnsafe(Rational(weight.asInstanceOf[Int], totalWeight))
+        }
+      case totalWeight: Long =>
+        weightsPerElement.map {
+          case (a, weight) => a -> RationalProbability.makeUnsafe(Rational(weight.asInstanceOf[Long], totalWeight))
+        }
+      case totalWeight: Rational =>
+        weightsPerElement.map {
+          case (a, weight) => a -> RationalProbability.makeUnsafe(weight.asInstanceOf[Rational] / totalWeight)
+        }
+      case _ =>
+        val totalWeightAsDouble = Numeric[N].toDouble(totalWeight)
+
+        weightsPerElement.map {
+          case (a, weight) =>
+            a -> RationalProbability.makeUnsafe(Rational(Numeric[N].toDouble(weight) / totalWeightAsDouble))
+        }
+    }
+
+    val probabilityDistribution = ProbabilityDistribution(rationalProbabilitiesPerOutcome.toMap) match {
+      case Right(d) => d
+      case Left(e)  => throw new AssertionError(e)
+    }
+
+    Some(probabilityDistribution)
+  }
 
   def apply[A](asMap: Map[A, RationalProbability]): Either[ConstructionError, ProbabilityDistribution[A]] =
     apply(asMap.toSeq: _*)
