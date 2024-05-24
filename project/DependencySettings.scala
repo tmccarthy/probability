@@ -19,7 +19,7 @@ object DependencySettings {
 
   val circeDependency = libraryDependencies += "io.circe" %% "circe-core" % "0.12.1"
 
-  val spireDependency = libraryDependencies += "org.typelevel" %% "spire" % "0.17.0-M1"
+  val spireDependency = libraryDependencies += "org.typelevel" %% "spire" % "0.18.0"
 
   val catsTestKitDependency = libraryDependencies ++= List(
     "org.typelevel" %% "cats-testkit" % "2.0.0-M4" % Test,
