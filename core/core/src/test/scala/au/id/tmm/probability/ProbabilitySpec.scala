@@ -27,8 +27,9 @@ abstract class ProbabilitySpec[P](
       (x, y) match {
         case (Right(x), Right(y)) => x === y
         case (
-            x: Left[Probability.Exception.ArithmeticCausedInvalid[P], P] @unchecked,
-            y: Left[Probability.Exception.ArithmeticCausedInvalid[P], P] @unchecked) =>
+              x: Left[Probability.Exception.ArithmeticCausedInvalid[P], P] @unchecked,
+              y: Left[Probability.Exception.ArithmeticCausedInvalid[P], P] @unchecked,
+            ) =>
           x.swap.getOrElse(fail()) === y.swap.getOrElse(fail())
         case _ => false
       }

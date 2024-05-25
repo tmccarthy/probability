@@ -8,7 +8,8 @@ final case class DoubleProbability(asDouble: Double) extends AnyVal {
     that: DoubleProbability,
   ): Either[Probability.Exception.ArithmeticCausedInvalid[DoubleProbability], DoubleProbability] =
     DoubleProbability(this.asDouble + that.asDouble).left.map(cause =>
-      Probability.Exception.ArithmeticCausedInvalid(this, that, cause))
+      Probability.Exception.ArithmeticCausedInvalid(this, that, cause),
+    )
 
   def addUnsafe(that: DoubleProbability): DoubleProbability =
     DoubleProbability.makeUnsafe(this.asDouble + that.asDouble)
@@ -17,7 +18,8 @@ final case class DoubleProbability(asDouble: Double) extends AnyVal {
     that: DoubleProbability,
   ): Either[Probability.Exception.ArithmeticCausedInvalid[DoubleProbability], DoubleProbability] =
     DoubleProbability(this.asDouble - that.asDouble).left.map(cause =>
-      Probability.Exception.ArithmeticCausedInvalid(this, that, cause))
+      Probability.Exception.ArithmeticCausedInvalid(this, that, cause),
+    )
 
   def subtractUnsafe(that: DoubleProbability): DoubleProbability =
     DoubleProbability.makeUnsafe(this.asDouble - that.asDouble)

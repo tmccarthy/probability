@@ -8,7 +8,8 @@ class RationalProbabilitySpec extends ProbabilitySpec[RationalProbability] {
 
   "safely constructing a rational probability" should "fail if it is less than zero" in {
     assert(
-      RationalProbability(Rational(-1)) === Left(Probability.Exception.Invalid(RationalProbability.makeUnsafe(-1))))
+      RationalProbability(Rational(-1)) === Left(Probability.Exception.Invalid(RationalProbability.makeUnsafe(-1))),
+    )
   }
 
   it should "fail if it is more than one" in {

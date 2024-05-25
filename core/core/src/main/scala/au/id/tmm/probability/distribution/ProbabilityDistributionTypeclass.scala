@@ -62,7 +62,7 @@ object ProbabilityDistributionTypeclass {
       probabilityDistributionInstance.allElementsEvenly(iterable)
 
     def evenly[A](head: A, tail: A*): Distribution[A] =
-      probabilityDistributionInstance.evenly(head, tail:_*)
+      probabilityDistributionInstance.evenly(head, tail: _*)
   }
 
 }

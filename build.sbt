@@ -158,7 +158,7 @@ lazy val exhaustiveDistributionScalacheck = project
   .settings(
     libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-testing-core" % tmmUtilsVersion  % Test,
     libraryDependencies += "org.scalatest"       %% "scalatest"              % scalatestVersion % Test,
-    libraryDependencies += "org.scalatestplus" %% "scalacheck-1-17" % "3.2.18.0" % Test,
+    libraryDependencies += "org.scalatestplus"   %% "scalacheck-1-17"        % "3.2.18.0"       % Test,
   )
   .dependsOn(exhaustiveDistribution)
 
@@ -169,8 +169,10 @@ lazy val exhaustiveDistributionCats = project
     libraryDependencies += "org.typelevel" %% "cats-core" % "2.10.0",
   )
   .settings(
-    libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-testing-core" % tmmUtilsVersion    % Test,
-    libraryDependencies += "org.scalatest"       %% "scalatest"              % scalatestVersion   % Test,
-    libraryDependencies += "org.typelevel"       %% "cats-testkit-scalatest" % catsTestkitVersion % Test,
+    libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-testing-core"       % tmmUtilsVersion    % Test,
+    libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-testing-cats"       % tmmUtilsVersion    % Test,
+    libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-testing-scalacheck" % tmmUtilsVersion    % Test,
+    libraryDependencies += "org.scalatest"       %% "scalatest"                    % scalatestVersion   % Test,
+    libraryDependencies += "org.typelevel"       %% "cats-testkit-scalatest"       % catsTestkitVersion % Test,
   )
   .dependsOn(exhaustiveDistribution, coreCats, exhaustiveDistributionScalacheck % "test->compile")

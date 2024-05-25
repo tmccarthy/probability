@@ -1,29 +1,28 @@
 package au.id.tmm.probability.distribution.exhaustive.cats
 
 import au.id.tmm.probability.distribution.exhaustive.ProbabilityDistribution
-import com.github.ghik.silencer.silent
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 import cats.data.{NonEmptyList => CatsNonEmptyList}
 import cats.data.{NonEmptySet => CatsNonEmptySet}
 import cats.data.{NonEmptyVector => CatsNonEmptyVector}
 import cats.instances.string.catsKernelStdOrderForString
 
-//noinspection ScalaDeprecation
-@silent("deprecated")
-class ProbabilityDistributionStaticCatsUtilitiesSpec extends FlatSpec {
+class ProbabilityDistributionStaticCatsUtilitiesSpec extends AnyFlatSpec {
 
   "creating a probability distribution from the elements of a cats NonEmptyList" should "return a probability distribution" in {
     val catsNonEmptyList = CatsNonEmptyList.of("hello", "world")
 
     assert(
-      ProbabilityDistribution.allElementsEvenly(catsNonEmptyList) === ProbabilityDistribution.evenly("hello", "world"))
+      ProbabilityDistribution.allElementsEvenly(catsNonEmptyList) === ProbabilityDistribution.evenly("hello", "world"),
+    )
   }
 
   "creating a probability distribution from the elements of a cats NonEmptySet" should "return a probability distribution" in {
     val catsNonEmptySet = CatsNonEmptySet.of("hello", "world")
 
     assert(
-      ProbabilityDistribution.allElementsEvenly(catsNonEmptySet) === ProbabilityDistribution.evenly("hello", "world"))
+      ProbabilityDistribution.allElementsEvenly(catsNonEmptySet) === ProbabilityDistribution.evenly("hello", "world"),
+    )
   }
 
   "creating a probability distribution from the elements of a cats NonEmptyVector" should "return a probability distribution" in {
@@ -31,7 +30,8 @@ class ProbabilityDistributionStaticCatsUtilitiesSpec extends FlatSpec {
 
     assert(
       ProbabilityDistribution
-        .allElementsEvenly(catsNonEmptyVector) === ProbabilityDistribution.evenly("hello", "world"))
+        .allElementsEvenly(catsNonEmptyVector) === ProbabilityDistribution.evenly("hello", "world"),
+    )
   }
 
 }

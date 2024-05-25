@@ -4,9 +4,9 @@ import au.id.tmm.probability.distribution.stochastic.ProbabilityDistribution
 import au.id.tmm.probability.distribution.stochastic.apache._
 import au.id.tmm.utilities.testing.syntax._
 import org.scalactic.Equality
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
-class NumericKolmogorovSmirnovEqualitySpec extends FlatSpec {
+class NumericKolmogorovSmirnovEqualitySpec extends AnyFlatSpec {
 
   ignore should "mark two normal distributions as equal" in {
     implicit val equality: Equality[ProbabilityDistribution[Double]] =

@@ -3,10 +3,10 @@ package au.id.tmm.probability.distribution.exhaustive.codecs
 import au.id.tmm.probability.distribution.exhaustive.ProbabilityDistribution
 import au.id.tmm.probability.rational.RationalProbability
 import io.circe.Json
-import io.circe.syntax._
-import org.scalatest.FlatSpec
+import io.circe.syntax.*
+import org.scalatest.flatspec.AnyFlatSpec
 
-class ProbabilityDistributionCodecSpec extends FlatSpec {
+class ProbabilityDistributionCodecSpec extends AnyFlatSpec {
 
   "the probability distribution encoder" should "encode a varied probability distribution" in {
     val probabilityDistribution = ProbabilityDistribution(
@@ -82,8 +82,12 @@ class ProbabilityDistributionCodecSpec extends FlatSpec {
       ),
     )
 
-    assert(json.as[ProbabilityDistribution[String]].left.map(_.getMessage()) ===
-      Left("au.id.tmm.probability.distribution.exhaustive.ProbabilityDistribution$ConstructionError$ProbabilitiesDontSumToOne$: ProbabilitiesDontSumToOne()"))
+    assert(
+      json.as[ProbabilityDistribution[String]].left.map(_.getMessage()) ===
+        Left(
+          "au.id.tmm.probability.distribution.exhaustive.ProbabilityDistribution$ConstructionError$ProbabilitiesDontSumToOne$: ProbabilitiesDontSumToOne()",
+        ),
+    )
   }
 
 }

@@ -8,7 +8,7 @@ abstract class AbstractStochasticProbabilityDistributionEquality[A] extends Equa
   override final def areEqual(a: ProbabilityDistribution[A], b: Any): Boolean =
     b match {
       case b: ProbabilityDistribution[A] @unchecked => areEqual(a, b)
-      case _                             => false
+      case _                                        => false
     }
 
   protected def areEqual(left: ProbabilityDistribution[A], right: ProbabilityDistribution[A]): Boolean

@@ -10,7 +10,8 @@ final case class RationalProbability private (asRational: Rational) extends AnyV
     that: RationalProbability,
   ): Either[Probability.Exception.ArithmeticCausedInvalid[RationalProbability], RationalProbability] =
     RationalProbability(this.asRational + that.asRational).left.map(cause =>
-      Probability.Exception.ArithmeticCausedInvalid(this, that, cause))
+      Probability.Exception.ArithmeticCausedInvalid(this, that, cause),
+    )
 
   def addUnsafe(that: RationalProbability): RationalProbability =
     RationalProbability.makeUnsafe(this.asRational + that.asRational)
@@ -19,7 +20,8 @@ final case class RationalProbability private (asRational: Rational) extends AnyV
     that: RationalProbability,
   ): Either[Probability.Exception.ArithmeticCausedInvalid[RationalProbability], RationalProbability] =
     RationalProbability(this.asRational - that.asRational).left.map(cause =>
-      Probability.Exception.ArithmeticCausedInvalid(this, that, cause))
+      Probability.Exception.ArithmeticCausedInvalid(this, that, cause),
+    )
 
   def subtractUnsafe(that: RationalProbability): RationalProbability =
     RationalProbability.makeUnsafe(this.asRational - that.asRational)

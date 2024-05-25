@@ -8,5 +8,6 @@ import cats.kernel.Order
   */
 package object sketchy {
   implicit val sketchyStdOrderForDoubleProbability: Order[DoubleProbability] = new DoubleProbabilityEpsilonOrder(
-    ε = 1e-10)
+    ε = 1e-10,
+  )
 }

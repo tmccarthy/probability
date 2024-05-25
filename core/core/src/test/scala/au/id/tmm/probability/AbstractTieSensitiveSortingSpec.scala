@@ -78,35 +78,35 @@ abstract class AbstractTieSensitiveSortingSpec[Distribution[_] : ProbabilityDist
 
   "a set with a tie between 3 outcomes and a tie between 2 outcomes" should
     "have 12 countcomes appropriately distributed" in {
-    val scores = Map(
-      "A" -> 1,
-      "B" -> 2,
-      "C" -> 2,
-      "D" -> 3,
-      "E" -> 3,
-      "F" -> 3,
-      "G" -> 5,
-    )
+      val scores = Map(
+        "A" -> 1,
+        "B" -> 2,
+        "C" -> 2,
+        "D" -> 3,
+        "E" -> 3,
+        "F" -> 3,
+        "G" -> 5,
+      )
 
-    val actualResult: Distribution[ArraySeq[String]] =
-      tieSensitiveSorting.sortBy(scores.keySet)(Ordering.by(scores))
+      val actualResult: Distribution[ArraySeq[String]] =
+        tieSensitiveSorting.sortBy(scores.keySet)(Ordering.by(scores))
 
-    val expectedResult = Distribution.evenly(
-      List("A", "B", "C", "D", "E", "F", "G"),
-      List("A", "B", "C", "F", "D", "E", "G"),
-      List("A", "B", "C", "E", "D", "F", "G"),
-      List("A", "B", "C", "E", "F", "D", "G"),
-      List("A", "B", "C", "D", "F", "E", "G"),
-      List("A", "B", "C", "F", "E", "D", "G"),
-      List("A", "C", "B", "D", "F", "E", "G"),
-      List("A", "C", "B", "F", "D", "E", "G"),
-      List("A", "C", "B", "E", "F", "D", "G"),
-      List("A", "C", "B", "E", "D", "F", "G"),
-      List("A", "C", "B", "F", "E", "D", "G"),
-      List("A", "C", "B", "D", "E", "F", "G"),
-    )
+      val expectedResult = Distribution.evenly(
+        List("A", "B", "C", "D", "E", "F", "G"),
+        List("A", "B", "C", "F", "D", "E", "G"),
+        List("A", "B", "C", "E", "D", "F", "G"),
+        List("A", "B", "C", "E", "F", "D", "G"),
+        List("A", "B", "C", "D", "F", "E", "G"),
+        List("A", "B", "C", "F", "E", "D", "G"),
+        List("A", "C", "B", "D", "F", "E", "G"),
+        List("A", "C", "B", "F", "D", "E", "G"),
+        List("A", "C", "B", "E", "F", "D", "G"),
+        List("A", "C", "B", "E", "D", "F", "G"),
+        List("A", "C", "B", "F", "E", "D", "G"),
+        List("A", "C", "B", "D", "E", "F", "G"),
+      )
 
-    assert(actualResult === expectedResult)
-  }
+      assert(actualResult === expectedResult)
+    }
 
 }

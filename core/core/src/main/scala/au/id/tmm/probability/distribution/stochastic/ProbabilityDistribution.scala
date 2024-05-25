@@ -47,7 +47,7 @@ final class ProbabilityDistribution[+A] private (private val sample: () => A) {
 }
 
 object ProbabilityDistribution
-  extends ProbabilityDistributionTypeclass.Companion[ProbabilityDistribution]
+    extends ProbabilityDistributionTypeclass.Companion[ProbabilityDistribution]
     with UniformProbabilityDistributionFactories
     with QuantileBasedDiscreteProbabilityDistributionFactories
     with WeightedDiscreteProbabilityDistributionFactories {
@@ -64,7 +64,10 @@ object ProbabilityDistribution
     super[UniformProbabilityDistributionFactories].headTailEvenly(head, tail)
   override def fromWeights[A, N : Numeric](weightsPerElement: Seq[(A, N)]): Option[ProbabilityDistribution[A]] =
     super[WeightedDiscreteProbabilityDistributionFactories].fromWeights(weightsPerElement)
-  override def headTailWeights[A, N : Numeric](firstWeight: (A, N), otherWeights: Seq[(A, N)]): ProbabilityDistribution[A] =
+  override def headTailWeights[A, N : Numeric](
+    firstWeight: (A, N),
+    otherWeights: Seq[(A, N)],
+  ): ProbabilityDistribution[A] =
     super[WeightedDiscreteProbabilityDistributionFactories].headTailWeights(firstWeight, otherWeights)
   override def allElementsEvenly[A](possibilities: NonEmptyList[A]): ProbabilityDistribution[A] =
     super[UniformProbabilityDistributionFactories].allElementsEvenly(possibilities)

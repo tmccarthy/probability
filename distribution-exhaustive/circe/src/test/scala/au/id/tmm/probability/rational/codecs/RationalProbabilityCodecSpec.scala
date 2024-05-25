@@ -3,9 +3,9 @@ package au.id.tmm.probability.rational.codecs
 import au.id.tmm.probability.rational.RationalProbability
 import io.circe.Json
 import io.circe.syntax._
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
-class RationalProbabilityCodecSpec extends FlatSpec {
+class RationalProbabilityCodecSpec extends AnyFlatSpec {
 
   "the rational probability decoder" should "decode 1" in {
     assert(Json.fromString("1").as[RationalProbability] === Right(RationalProbability.one))

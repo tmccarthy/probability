@@ -2,13 +2,10 @@ package au.id.tmm.probability.distribution.exhaustive.cats
 
 import au.id.tmm.probability.distribution.exhaustive.ProbabilityDistribution
 import au.id.tmm.probability.distribution.exhaustive.ProbabilityDistribution.Always
-import cats.instances.string._
-import cats.syntax.show._
-import com.github.ghik.silencer.silent
+import cats.syntax.show.*
+import org.scalatest.flatspec.AnyFlatSpec
 
-//noinspection ScalaDeprecation
-@silent("deprecated")
-class ProbabilityDistributionShowSpec extends org.scalatest.FlatSpec {
+class ProbabilityDistributionShowSpec extends AnyFlatSpec {
 
   private implicit val showUnderTest: ProbabilityDistributionShow[String] =
     new ProbabilityDistributionShow[String]
@@ -20,7 +17,8 @@ class ProbabilityDistributionShowSpec extends org.scalatest.FlatSpec {
   it should "render a varied probability distribution" in {
     assert(
       (ProbabilityDistribution.evenly("hello", "world"): ProbabilityDistribution[String]).show ===
-        "ProbabilityDistribution(hello -> 1/2, world -> 1/2)")
+        "ProbabilityDistribution(hello -> 1/2, world -> 1/2)",
+    )
   }
 
 }

@@ -58,7 +58,8 @@ class ProbabilityDistributionSpec extends AnyFlatSpec {
       product === makeVaried(
         ("hello", "hello") -> Rational(1, 3),
         ("hello", "world") -> Rational(2, 3),
-      ))
+      ),
+    )
   }
 
   it should "be equal to another probability distribution with the same single outcome" in {
@@ -103,7 +104,9 @@ class ProbabilityDistributionSpec extends AnyFlatSpec {
     assert(
       varied.asMap === Map(
         "hello" -> RationalProbability.makeUnsafe(1, 2),
-        "world" -> RationalProbability.makeUnsafe(1, 2)))
+        "world" -> RationalProbability.makeUnsafe(1, 2),
+      ),
+    )
   }
 
   it should "return the chance of any possibility" in {
@@ -196,7 +199,8 @@ class ProbabilityDistributionSpec extends AnyFlatSpec {
       varied.productWith(Always("hello")) === makeVaried(
         ("hello", "hello") -> Rational(1, 3),
         ("world", "hello") -> Rational(2, 3),
-      ))
+      ),
+    )
   }
 
   it can "be combined with another probability distribution with a varied outcome" in {
@@ -253,11 +257,11 @@ class ProbabilityDistributionSpec extends AnyFlatSpec {
 
   "constructing a probability distribution evenly from some possibilities" should
     "return all possibilities with equal probabilities" in {
-    assert(
-      ProbabilityDistribution.evenly("hello", "world", "apple") ===
-        makeVaried("hello" -> Rational(1, 3), "world" -> Rational(1, 3), "apple" -> Rational(1, 3)),
-    )
-  }
+      assert(
+        ProbabilityDistribution.evenly("hello", "world", "apple") ===
+          makeVaried("hello" -> Rational(1, 3), "world" -> Rational(1, 3), "apple" -> Rational(1, 3)),
+      )
+    }
 
   it should "return an Always when given only one argument" in {
     assert(ProbabilityDistribution.evenly("hello") === Always("hello"))
@@ -265,11 +269,11 @@ class ProbabilityDistributionSpec extends AnyFlatSpec {
 
   "constructing a probability distribution evenly from a non-empty list" should
     "return all possibilities with equal probabilities" in {
-    assert(
-      ProbabilityDistribution.allElementsEvenly(::("hello", List("world", "apple"))) ===
-        makeVaried("hello" -> Rational(1, 3), "world" -> Rational(1, 3), "apple" -> Rational(1, 3)),
-    )
-  }
+      assert(
+        ProbabilityDistribution.allElementsEvenly(::("hello", List("world", "apple"))) ===
+          makeVaried("hello" -> Rational(1, 3), "world" -> Rational(1, 3), "apple" -> Rational(1, 3)),
+      )
+    }
 
   it should "return an Always when given a list with only a head" in {
     assert(ProbabilityDistribution.allElementsEvenly(::("hello", Nil)) === Always("hello"))
@@ -277,11 +281,11 @@ class ProbabilityDistributionSpec extends AnyFlatSpec {
 
   "constructing a probability distribution evenly from a traversable of possibilities" should
     "return all possibilities with equal probabilities" in {
-    assert(
-      ProbabilityDistribution.allElementsEvenly(List("hello", "world", "apple")) ===
-        Some(makeVaried("hello" -> Rational(1, 3), "world" -> Rational(1, 3), "apple" -> Rational(1, 3))),
-    )
-  }
+      assert(
+        ProbabilityDistribution.allElementsEvenly(List("hello", "world", "apple")) ===
+          Some(makeVaried("hello" -> Rational(1, 3), "world" -> Rational(1, 3), "apple" -> Rational(1, 3))),
+      )
+    }
 
   it should "return an Always when given a traversable with one element" in {
     assert(ProbabilityDistribution.allElementsEvenly(List("hello")) === Some(Always("hello")))
@@ -312,7 +316,8 @@ class ProbabilityDistributionSpec extends AnyFlatSpec {
     val expectedOutput =
       Left(
         ConstructionError
-          .InvalidProbabilityForKey("hello", Probability.Exception.Invalid(RationalProbability.makeUnsafe(-1, 1))))
+          .InvalidProbabilityForKey("hello", Probability.Exception.Invalid(RationalProbability.makeUnsafe(-1, 1))),
+      )
 
     assert(attemptedProbabilityDistribution === expectedOutput)
   }
@@ -328,7 +333,8 @@ class ProbabilityDistributionSpec extends AnyFlatSpec {
     val expectedOutput =
       Left(
         ConstructionError
-          .InvalidProbabilityForKey("hello", Probability.Exception.Invalid(RationalProbability.makeUnsafe(2, 1))))
+          .InvalidProbabilityForKey("hello", Probability.Exception.Invalid(RationalProbability.makeUnsafe(2, 1))),
+      )
 
     assert(attemptedProbabilityDistribution === expectedOutput)
   }

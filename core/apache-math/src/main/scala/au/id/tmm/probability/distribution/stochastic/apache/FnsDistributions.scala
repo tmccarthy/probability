@@ -26,7 +26,8 @@ trait FnsDistributions { this: FnsApacheToProbabilityDistribution =>
           case _                         => means.toArray[Double]
         },
         covariances.unsafeArray,
-      ))
+      ),
+    )
 
   def uniform(lower: Double, upper: Double): Either[NumberIsTooLargeException, ProbabilityDistribution[Double]] =
     try {

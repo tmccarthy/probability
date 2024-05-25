@@ -105,7 +105,8 @@ object ProbabilityDistribution extends ProbabilityDistributionTypeclass.Companio
     val rationalProbabilitiesPerOutcome: Seq[(A, RationalProbability)] = totalWeight match {
       case totalWeight: Int =>
         weightsPerElement.map {
-          case (a, weight) => a -> RationalProbability.makeUnsafe(Rational(weight.asInstanceOf[Int].toLong, totalWeight.toLong))
+          case (a, weight) =>
+            a -> RationalProbability.makeUnsafe(Rational(weight.asInstanceOf[Int].toLong, totalWeight.toLong))
         }
       case totalWeight: Long =>
         weightsPerElement.map {
