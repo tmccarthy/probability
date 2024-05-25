@@ -346,7 +346,7 @@ class ProbabilityDistributionSpec extends AnyFlatSpec {
         "world" -> RationalProbability.makeUnsafe(1, 3),
       )
 
-    val expectedOutput = Left(ConstructionError.ProbabilitiesDontSumToOne)
+    val expectedOutput = Left(ConstructionError.ProbabilitiesDontSumToOne(RationalProbability.makeUnsafe(2, 3)))
 
     assert(attemptedProbabilityDistribution === expectedOutput)
   }

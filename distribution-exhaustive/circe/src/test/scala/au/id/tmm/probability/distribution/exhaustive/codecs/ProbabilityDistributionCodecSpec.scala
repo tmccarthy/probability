@@ -85,7 +85,7 @@ class ProbabilityDistributionCodecSpec extends AnyFlatSpec {
     assert(
       json.as[ProbabilityDistribution[String]].left.map(_.getMessage()) ===
         Left(
-          "au.id.tmm.probability.distribution.exhaustive.ProbabilityDistribution$ConstructionError$ProbabilitiesDontSumToOne$: ProbabilitiesDontSumToOne()",
+          "au.id.tmm.probability.distribution.exhaustive.ProbabilityDistribution$ConstructionError$ProbabilitiesDontSumToOne: ProbabilitiesDontSumToOne(1/3)",
         ),
     )
   }
