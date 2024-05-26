@@ -41,6 +41,7 @@ val circeVersion       = "0.14.3"
 
 lazy val root = tlCrossRootProject
   .settings(console := (core / Compile / console).value)
+  .settings(xerial.sbt.Sonatype.SonatypeKeys.sonatypeProfileName := "au.id.tmm")
   .aggregate(
     core,
     coreCirce,
