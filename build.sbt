@@ -2,7 +2,7 @@ name := "probability"
 
 ThisBuild / tlBaseVersion := "0.4"
 
-//Sonatype.SonatypeKeys.sonatypeProfileName := "au.id.tmm"
+ThisBuild / xerial.sbt.Sonatype.SonatypeKeys.sonatypeProfileName := "au.id.tmm"
 ThisBuild / organization := "au.id.tmm.probability"
 ThisBuild / organizationName := "Timothy McCarthy"
 ThisBuild / startYear := Some(2019)
