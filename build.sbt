@@ -58,6 +58,7 @@ lazy val root = tlCrossRootProject
 lazy val core = project
   .in(file("core/core"))
   .settings(name := "probability-core")
+  .settings(xerial.sbt.Sonatype.SonatypeKeys.sonatypeProfileName := "au.id.tmm")
   .settings(
   )
   .settings(
@@ -68,6 +69,7 @@ lazy val core = project
 lazy val coreCirce = project
   .in(file("core/circe"))
   .settings(name := "probability-core-circe")
+  .settings(xerial.sbt.Sonatype.SonatypeKeys.sonatypeProfileName := "au.id.tmm")
   .settings(
     libraryDependencies += "io.circe" %% "circe-core" % circeVersion,
   )
@@ -80,6 +82,7 @@ lazy val coreCirce = project
 lazy val coreScalacheck = project
   .in(file("core/scalacheck"))
   .settings(name := "probability-core-scalacheck")
+  .settings(xerial.sbt.Sonatype.SonatypeKeys.sonatypeProfileName := "au.id.tmm")
   .settings(
     libraryDependencies += "org.scalacheck" %% "scalacheck" % scalacheckVersion,
   )
@@ -92,6 +95,7 @@ lazy val coreScalacheck = project
 lazy val coreCats = project
   .in(file("core/cats"))
   .settings(name := "probability-core-cats")
+  .settings(xerial.sbt.Sonatype.SonatypeKeys.sonatypeProfileName := "au.id.tmm")
   .settings(
     libraryDependencies += "org.typelevel" %% "cats-core" % "2.10.0",
   )
@@ -105,6 +109,7 @@ lazy val coreCats = project
 lazy val coreApacheMath = project
   .in(file("core/apache-math"))
   .settings(name := "probability-core-apache-math")
+  .settings(xerial.sbt.Sonatype.SonatypeKeys.sonatypeProfileName := "au.id.tmm")
   .settings(
     libraryDependencies += "org.apache.commons" % "commons-math3" % "3.6.1",
   )
@@ -117,6 +122,7 @@ lazy val coreApacheMath = project
 lazy val coreTesting = project
   .in(file("core/testing"))
   .settings(name := "probability-core-testing")
+  .settings(xerial.sbt.Sonatype.SonatypeKeys.sonatypeProfileName := "au.id.tmm")
   .settings(
     libraryDependencies += "org.scalatest" %% "scalatest" % scalatestVersion,
   )
@@ -129,6 +135,7 @@ lazy val coreTesting = project
 lazy val exhaustiveDistribution = project
   .in(file("distribution-exhaustive/core"))
   .settings(name := "probability-distribution-exhaustive")
+  .settings(xerial.sbt.Sonatype.SonatypeKeys.sonatypeProfileName := "au.id.tmm")
   .settings(
     libraryDependencies += "org.typelevel" %% "spire" % spireVersion,
   )
@@ -141,6 +148,7 @@ lazy val exhaustiveDistribution = project
 lazy val exhaustiveDistributionCirce = project
   .in(file("distribution-exhaustive/circe"))
   .settings(name := "probability-distribution-exhaustive-circe")
+  .settings(xerial.sbt.Sonatype.SonatypeKeys.sonatypeProfileName := "au.id.tmm")
   .settings(
     libraryDependencies += "io.circe" %% "circe-core" % circeVersion,
   )
@@ -153,6 +161,7 @@ lazy val exhaustiveDistributionCirce = project
 lazy val exhaustiveDistributionScalacheck = project
   .in(file("distribution-exhaustive/scalacheck"))
   .settings(name := "probability-distribution-exhaustive-scalacheck")
+  .settings(xerial.sbt.Sonatype.SonatypeKeys.sonatypeProfileName := "au.id.tmm")
   .settings(
     libraryDependencies += "org.scalacheck" %% "scalacheck" % scalacheckVersion,
   )
@@ -166,6 +175,7 @@ lazy val exhaustiveDistributionScalacheck = project
 lazy val exhaustiveDistributionCats = project
   .in(file("distribution-exhaustive/cats"))
   .settings(name := "probability-distribution-exhaustive-cats")
+  .settings(xerial.sbt.Sonatype.SonatypeKeys.sonatypeProfileName := "au.id.tmm")
   .settings(
     libraryDependencies += "org.typelevel" %% "cats-core" % "2.10.0",
   )
