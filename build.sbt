@@ -29,6 +29,7 @@ ThisBuild / tlCiScalafmtCheck := true
 ThisBuild / tlCiMimaBinaryIssueCheck := false
 ThisBuild / tlCiDependencyGraphJob := false
 ThisBuild / tlFatalWarnings := true
+ThisBuild / tlSonatypeUseLegacyHost := true
 
 addCommandAlias("check", ";githubWorkflowCheck;scalafmtSbtCheck;+scalafmtCheckAll;+test")
 addCommandAlias("fix", ";githubWorkflowGenerate;scalafmtSbt;+scalafmtAll")
